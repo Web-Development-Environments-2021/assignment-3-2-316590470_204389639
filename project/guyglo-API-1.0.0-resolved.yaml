@@ -1,0 +1,463 @@
+---
+openapi: 3.0.0
+info:
+  title: Simple Inventory API
+  description: This is a simple API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/guyglo/API/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: default
+  description: general perpous pages
+- name: authentication
+  description: actions related to login/out registration ect..
+- name: user
+  description: actions and requests that require being logged to the system
+- name: player
+  description: requests relating to players information that dont reqire being logged in
+- name: coach
+  description: requests realting coaches that dont require being loogged in
+- name: team
+  description: requests relating team information that dont require being logged in
+- name: league
+  description: requests relating league that dont require being logged in
+paths:
+  /:
+    get:
+      tags:
+      - default
+      summary: home page
+      responses:
+        "200":
+          description: Successful pull of homepage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/homePage'
+        "400":
+          description: The server could not understand the request due to invalid syntax
+        "409":
+          description: Can't complete the request.
+  /about:
+    get:
+      tags:
+      - default
+      summary: about page
+      responses:
+        "200":
+          description: sucsessful request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/about'
+        "404":
+          description: cannot find about page
+  /register:
+    post:
+      tags:
+      - authentication
+      summary: adds new user in the database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/registerBody'
+        required: true
+      responses:
+        "201":
+          description: Successfully created a new user.
+        "400":
+          description: Could not register since some fields are empty. You must fill all fields.
+        "409":
+          description: username already exist
+  /login:
+    post:
+      tags:
+      - authentication
+      summary: logs in existing user in the database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginBody'
+        required: true
+      responses:
+        "200":
+          description: Successfully login
+        "400":
+          description: Authorization has failed due to wrong username or password.
+  /logout:
+    get:
+      tags:
+      - user
+      summary: logout from user
+      parameters: []
+      responses:
+        "200":
+          description: sucsessful logout
+  /players/{playerId}/ticketDetails:
+    get:
+      tags:
+      - player
+      summary: player's ticket info
+      description: shows player's ticket info.
+      parameters:
+      - name: playerId
+        in: path
+        description: Identifier of player
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: firstName lastName
+      responses:
+        "200":
+          description: Successfully pulled player details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/player_response'
+        "204":
+          description: No such player id.
+  /coaches/{coachId}/ticketDetails:
+    get:
+      tags:
+      - coach
+      summary: coach's ticket info
+      description: shows coach's ticket info.
+      parameters:
+      - name: coachId
+        in: path
+        description: Identifier of coach
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: firstName lastName
+      responses:
+        "200":
+          description: Successfully pulled coach details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/coach_response'
+        "204":
+          description: No such coach id.
+  /teams/{teamId}/ticketDetails:
+    get:
+      tags:
+      - team
+      summary: team's ticket info
+      description: shows team's ticket info.
+      parameters:
+      - name: teamId
+        in: path
+        description: Identifier of team
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: bayren munich
+      responses:
+        "200":
+          description: Successfully pulled team details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/team_response'
+        "204":
+          description: No such coach id.
+  /users/addFavorite:
+    post:
+      tags:
+      - user
+      summary: add coach or player to a user's favorites
+      description: adding coach or player to favorites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+        required: true
+      responses:
+        "201":
+          description: Successfully added to favorites.
+        "409":
+          description: Already in favorites. Cannot add again.
+  /users/myFavorites:
+    get:
+      tags:
+      - user
+      summary: display user's favorite players/ teams/ coaches
+      parameters: []
+      responses:
+        "200":
+          description: sucsess
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/my_favorites'
+        "404":
+          description: page not found
+  /league/current_games:
+    get:
+      tags:
+      - league
+      description: display current period games
+      responses:
+        "200":
+          description: Successfully pulled team details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/current_games'
+        "404":
+          description: page not found
+components:
+  schemas:
+    playerPreview:
+      type: object
+      properties:
+        full name:
+          type: string
+          example: Israel Israeli
+        current team name:
+          type: string
+          example: Inter
+        picture:
+          type: string
+        position number:
+          type: integer
+          example: 1
+      description: shows some information on player.
+    playerFull:
+      type: object
+      properties:
+        nationality:
+          type: string
+          example: Italy
+        birth date:
+          type: string
+          example: 07/07/1991
+        birth country:
+          type: string
+          example: Italy
+        height:
+          type: string
+          example: 175 cm
+        weight:
+          type: string
+          example: 90 kg
+        started at:
+          type: string
+          example: 2019-09-02T09:52:14.000+0000
+        trial ends at:
+          type: string
+          example: 2019-09-16T09:52:10.000+0000
+      description: full information about player.
+    coachPreview:
+      type: object
+      properties:
+        full name:
+          type: string
+          example: Israel Israeli
+        current team name:
+          type: string
+          example: Inter
+        picture:
+          type: string
+      description: shows some information on coach.
+    coachFull:
+      type: object
+      properties:
+        nationality:
+          type: string
+          example: Italy
+        birth date:
+          type: string
+          example: 07/07/1991
+        birth country:
+          type: string
+          example: Italy
+        started at:
+          type: string
+          example: 2019-09-02T09:52:14.000+0000
+        trial ends at:
+          type: string
+          example: 2019-09-16T09:52:10.000+0000
+      description: full information about coach.
+    leagueInfo:
+      type: object
+      properties:
+        full name:
+          type: string
+        current season:
+          type: string
+        current stage:
+          type: string
+        next game:
+          type: string
+      description: information about some leagues - name, current season, current stage, next game detail
+    game:
+      type: object
+      properties:
+        home team:
+          type: string
+          example: Inter
+        away team:
+          type: string
+          example: Barcelona
+        date:
+          type: string
+          example: 20/07/2021
+        result:
+          type: string
+          example: 1-2
+      description: info about games, occured or not.
+    registerBody:
+      type: object
+      properties:
+        username:
+          maxLength: 8
+          minLength: 3
+          type: string
+          example: Israel
+        first name:
+          type: string
+          example: Israel
+        last name:
+          type: string
+          example: Israeli
+        country:
+          type: string
+          example: Israel
+        password:
+          maxLength: 10
+          minLength: 5
+          type: string
+          example: israel1!
+        confirmation password:
+          maxLength: 10
+          minLength: 5
+          type: string
+          example: israel1!
+        email:
+          type: string
+          example: israel@gmail.com
+        picture:
+          type: string
+    loginBody:
+      type: object
+      properties:
+        username:
+          maxLength: 8
+          minLength: 3
+          type: string
+          example: Israel
+        password:
+          maxLength: 10
+          minLength: 5
+          type: string
+          example: israel1!
+    homePage:
+      type: object
+      properties:
+        Leagues:
+          $ref: '#/components/schemas/leagueInfo'
+        Games:
+          maxItems: 3
+          type: array
+          items:
+            $ref: '#/components/schemas/game'
+    player_response:
+      type: object
+      properties:
+        Player preview:
+          $ref: '#/components/schemas/playerPreview'
+        Player full:
+          $ref: '#/components/schemas/playerFull'
+    coach_response:
+      type: object
+      properties:
+        Coach preview:
+          $ref: '#/components/schemas/coachPreview'
+        Coach full:
+          $ref: '#/components/schemas/coachFull'
+    body_2:
+      type: object
+      properties:
+        ticket id:
+          type: integer
+          example: 50
+    about:
+      type: object
+      properties:
+        details:
+          type: string
+          example: this is some information about the site
+    team_response:
+      type: object
+      properties:
+        team preview:
+          $ref: '#/components/schemas/teamPreview'
+        team full:
+          $ref: '#/components/schemas/teamFull'
+    teamPreview:
+      type: object
+      properties:
+        teamName:
+          type: string
+          example: Bayren Munich
+        teamID:
+          type: integer
+        symbol:
+          type: string
+          example: https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/1200px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png
+        favorite:
+          type: boolean
+      description: preview and full info of a team object
+    teamFull:
+      type: object
+      properties:
+        coach:
+          $ref: '#/components/schemas/coachPreview'
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/playerPreview'
+        future_games:
+          type: array
+          items:
+            $ref: '#/components/schemas/game'
+        past_games:
+          type: array
+          items:
+            $ref: '#/components/schemas/game'
+      description: preview and full info of a team object
+    current_games:
+      type: object
+      properties:
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/game'
+    my_favorites:
+      type: object
+      properties:
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/playerPreview'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/teamPreview'
