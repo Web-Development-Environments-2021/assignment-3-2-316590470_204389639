@@ -242,6 +242,9 @@ components:
     playerFull:
       type: object
       properties:
+        common name:
+          type: string
+          example: messi
         nationality:
           type: string
           example: Italy
@@ -257,12 +260,6 @@ components:
         weight:
           type: string
           example: 90 kg
-        started at:
-          type: string
-          example: 2019-09-02T09:52:14.000+0000
-        trial ends at:
-          type: string
-          example: 2019-09-16T09:52:10.000+0000
       description: full information about player.
     coachPreview:
       type: object
@@ -279,6 +276,9 @@ components:
     coachFull:
       type: object
       properties:
+        common name:
+          type: string
+          example: alon
         nationality:
           type: string
           example: Italy
@@ -288,12 +288,6 @@ components:
         birth country:
           type: string
           example: Italy
-        started at:
-          type: string
-          example: 2019-09-02T09:52:14.000+0000
-        trial ends at:
-          type: string
-          example: 2019-09-16T09:52:10.000+0000
       description: full information about coach.
     leagueInfo:
       type: object
@@ -323,6 +317,19 @@ components:
           type: string
           example: 1-2
       description: info about games, occured or not.
+    gamePreview:
+      type: object
+      properties:
+        home team:
+          type: string
+          exmaple: Inter
+        away team:
+          type: string
+          example: Barcelona
+        date:
+          type: string
+          example: 20/07/2021
+      description: game not occured yet details
     registerBody:
       type: object
       properties:
