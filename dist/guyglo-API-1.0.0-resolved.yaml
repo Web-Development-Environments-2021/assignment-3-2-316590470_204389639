@@ -9,9 +9,6 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
-servers:
-- url: https://virtserver.swaggerhub.com/guyglo/API/1.0.0
-  description: SwaggerHub API Auto Mocking
 tags:
 - name: default
   description: general perpous pages
@@ -90,6 +87,13 @@ paths:
       responses:
         "200":
           description: Successfully login
+          headers:
+            Set-Cookie:
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: session=v1ad5vad1v5adv
         "400":
           description: Authorization has failed due to wrong username or password.
   /logout:
@@ -101,6 +105,14 @@ paths:
       responses:
         "200":
           description: sucsessful logout
+          headers:
+            Set-Cookie:
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: session=deleted;; Expires=Wed, 24-Feb-2021 00:03:21 GMT;
+                  Path=/
   /players/{playerId}/ticketDetails:
     get:
       tags:
