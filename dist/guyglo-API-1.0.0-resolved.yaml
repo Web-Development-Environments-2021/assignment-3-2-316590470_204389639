@@ -220,6 +220,24 @@ paths:
                 $ref: '#/components/schemas/my_favorites'
         "404":
           description: page not found
+  /league/addGame:
+    post:
+      tags:
+      - league
+      description: adding new game to games table in db.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/gamePreview'
+        required: true
+      responses:
+        "201": 
+          description: Successfully created game.
+        "400":
+          description: Bad request, some fields are wrong.
+        "401":
+          description: Unauthorized, you have no permissions.
   /league/current_games:
     get:
       tags:
@@ -262,7 +280,7 @@ components:
           example: Italy
         birth date:
           type: string
-          example: 07/07/1991
+          example: 1991-07-31
         birth country:
           type: string
           example: Italy
@@ -296,7 +314,7 @@ components:
           example: Italy
         birth date:
           type: string
-          example: 07/07/1991
+          example: 1991-07-31
         birth country:
           type: string
           example: Italy
@@ -316,32 +334,60 @@ components:
     game:
       type: object
       properties:
-        home team:
-          type: string
-          example: Inter
-        away team:
-          type: string
-          example: Barcelona
         date:
           type: string
-          example: 20/07/2021
-        result:
+          example: 2021-07-20
+        time:
           type: string
-          example: 1-2
+          example: 15:30:00
+        home_team:
+          type: string
+          example: Inter
+        away_team:
+          type: string
+          example: Barcelona
+        field:
+          type: string
+          example: Camp Nou
+        home_goal:
+          tpye: integer
+          example: 1
+        away_goal:
+          type: integer
+          example: 2
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/event'
       description: info about games, occured or not.
     gamePreview:
       type: object
       properties:
-        home team:
-          type: string
-          exmaple: Inter
-        away team:
-          type: string
-          example: Barcelona
         date:
           type: string
-          example: 20/07/2021
+          example: 2021-07-20
+        time:
+          type: string
+          example: 15:30:00
+        home_team:
+          type: string
+          example: Inter
+        away_team:
+          type: string
+          example: Barcelona
+        field:
+          type: string
+          example: Camp Nou
       description: game not occured yet details
+    event:
+      type: object
+      properties:
+        minute:
+          type: string
+          example: 45'
+        description:
+          type: string
+          example: foul
     registerBody:
       type: object
       properties:

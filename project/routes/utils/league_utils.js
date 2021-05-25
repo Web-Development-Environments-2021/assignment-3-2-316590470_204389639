@@ -19,6 +19,9 @@ async function getLeagueDetails() {
       },
     }
   );
+  // find next game
+  
+
   return {
     league_name: league.data.data.name,
     current_season_name: league.data.data.season.data.name,
@@ -26,4 +29,5 @@ async function getLeagueDetails() {
     // next game details should come from DB
   };
 }
+
 exports.getLeagueDetails = getLeagueDetails;
