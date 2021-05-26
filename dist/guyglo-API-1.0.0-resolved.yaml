@@ -192,8 +192,8 @@ paths:
     post:
       tags:
       - user
-      summary: add coach or player to a user's favorites
-      description: adding coach or player to favorites
+      summary: add coach  player or team to a user's favorites
+      description: adding coach, player or team to favorites
       requestBody:
         content:
           application/json:
@@ -205,11 +205,62 @@ paths:
           description: Successfully added to favorites.
         "409":
           description: Already in favorites. Cannot add again.
-  /users/myFavorites:
+  /users/favoritePlayers:
+    post:
+      tags:
+      - user
+      summary: add player to a user's favorites
+      description: adding player to favorites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+        required: true
+      responses:
+        "201":
+          description: Successfully added player to favorites.
+        "409":
+          description: Already in favorites. Cannot add again.
+  /users/favoriteTeams:
+    post:
+      tags:
+      - user
+      summary: add team to a user's favorites
+      description: adding team to favorites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+        required: true
+      responses:
+        "201":
+          description: Successfully added team to favorites.
+        "409":
+          description: Already in favorites. Cannot add again.
+  /users/favoriteCoaches:
+    post:
+      tags:
+      - user
+      summary: add coach to a user's favorites
+      description: adding coach to favorites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+        required: true
+      responses:
+        "201":
+          description: Successfully added coach to favorites.
+        "409":
+          description: Already in favorites. Cannot add again.
+  /users/favoritePlayers:
     get:
       tags:
       - user
-      summary: display user's favorite players/ teams/ coaches
+      summary: display user's favorite players
       parameters: []
       responses:
         "200":
@@ -217,7 +268,37 @@ paths:
           content:
             aplication/json:
               schema:
-                $ref: '#/components/schemas/my_favorites'
+                $ref: '#/components/schemas/fav_players'
+        "404":
+          description: page not found
+  /users/favoriteTeams:
+    get:
+      tags:
+      - user
+      summary: display user's favorite teams
+      parameters: []
+      responses:
+        "200":
+          description: sucsess
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/fav_teams'
+        "404":
+          description: page not found
+  /users/favoriteCoaches:
+    get:
+      tags:
+      - user
+      summary: display user's favorite coaches
+      parameters: []
+      responses:
+        "200":
+          description: sucsess
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/fav_coaches'
         "404":
           description: page not found
   /league/addGame:
@@ -442,7 +523,7 @@ components:
           maxItems: 3
           type: array
           items:
-            $ref: '#/components/schemas/game'
+            $ref: '#/components/schemas/gamePreview'
     player_response:
       type: object
       properties:
@@ -515,14 +596,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/game'
-    my_favorites:
+    fav_players:
       type: object
       properties:
         players:
           type: array
-          items:
+          itmes:
             $ref: '#/components/schemas/playerPreview'
-        teams:
+    fav_teams:
+      type: object
+      properties:
+        players:
           type: array
-          items:
+          itmes:
             $ref: '#/components/schemas/teamPreview'
+    fav_coches:
+      type: object
+      properties:
+        players:
+          type: array
+          itmes:
+            $ref: '#/components/schemas/coachPreview'

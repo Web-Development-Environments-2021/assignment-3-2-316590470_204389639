@@ -3,6 +3,7 @@
 // shiri commit
 
 const DButils = require("./routes/utils/DButils");
+const league_utils = require("./routes/utils/league_utils");
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
@@ -54,6 +55,7 @@ const auth = require("./routes/auth");
 const users = require("./routes/users");
 const league = require("./routes/league");
 const teams = require("./routes/teams");
+const router = require("./routes/league");
 
 //#endregion
 
@@ -77,6 +79,16 @@ app.use(function (req, res, next) {
 // ----> For cheking that our server is alive
 app.get("/alive", (req, res) => res.send("I'm alive"));
 
+// getting home page
+// app.get('/', (req, res) => {
+//   try{
+//     const league_details = league_utils.getLeagueDetails();
+//     // const favorite_games = 
+//   } catch (error){
+//     next(error);
+//   }
+// });
+
 // Routings
 app.use("/users", users);
 app.use("/league", league);
@@ -87,7 +99,6 @@ app.use(function (err, req, res, next) {
   console.error(err);
   res.status(err.status || 500).send(err.message);
 });
-
 
 const server = app.listen(port, () => {
   console.log(`Server listen on port ${port}`);
