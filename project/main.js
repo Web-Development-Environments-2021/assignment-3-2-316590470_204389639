@@ -81,15 +81,15 @@ app.use(function (req, res, next) {
 app.get("/alive", (req, res) => res.send("I'm alive"));
 
 // getting home page
-// app.get('/', (req, res) => {
-//   try{
-//     const league_details = league_utils.getLeagueDetails();
-//     const favorite_games = 
-//     res.status(200).send({league_details, favorite_games});
-//   } catch (error){
-//     next(error);
-//   }
-// });
+app.get('/', (req, res) => {
+  try{
+    const league_details = league_utils.getLeagueDetails();
+    // const favorite_games = 
+    res.status(200).send(league_details);
+  } catch (error){
+    next(error);
+  }
+});
 
 // Routings
 app.use("/users", users);

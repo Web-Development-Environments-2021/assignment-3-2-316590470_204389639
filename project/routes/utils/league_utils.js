@@ -42,7 +42,7 @@ async function getLeagueDetails() {
   };
 }
 
-async function convertDate(date) {
+function convertDate(date) {
   var yyyy = date.getFullYear().toString();
   var mm = (date.getMonth()+1).toString();
   var dd  = date.getDate().toString();
