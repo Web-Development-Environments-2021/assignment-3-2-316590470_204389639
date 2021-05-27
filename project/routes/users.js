@@ -101,11 +101,7 @@ router.post("/favoriteGames", async (req, res, next) => {
  router.get("/favoriteGames", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    let favorite_games = {};
-    const game_ids = await users_utils.getFavoriteGames(user_id);
-    let game_ids_array = [];
-    game_ids.map((element) => game_ids_array.push(element.game_id)); //extracting the games ids into array
-    const results = await games_utils.getGamesInfo(game_ids_array); 
+    const results = await users_utils.getFavoriteGames(user_id);
     res.status(200).send(results);
   } catch (error) {
     next(error);

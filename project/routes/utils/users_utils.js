@@ -1,4 +1,5 @@
 const DButils = require("./DButils");
+const games_utils = require("./games_utils");
 
 async function markPlayerAsFavorite(user_id, player_id) {
   await DButils.execQuery(
@@ -23,7 +24,13 @@ async function getFavoriteGames(user_id) {
   const game_ids = await DButils.execQuery(
     `select game_id from fav_games where user_id='${user_id}'`
   );
-  return game_ids;
+  // no games were found, return null
+  if(game_ids.length==0){ return null;}
+
+  let game_ids_array = [];
+  game_ids.map((element) => game_ids_array.push(element.game_id)); //extracting the games ids into array
+  const results = await games_utils.getGamesInfo(game_ids_array); 
+  return results;
 }
 
 async function markTeamAsFavorite(user_id, team_id){

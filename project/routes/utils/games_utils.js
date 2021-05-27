@@ -2,22 +2,16 @@ const DButils = require("./DButils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 async function getGamesInfo(game_ids_list){
-  let promises = [];
-  game_ids_list.map((id) =>
-    promises.push(
-      DButils.execQuery(
-          `SELECT date, time, home_team, away_team, field FROM games
-          WHERE game_id = ${id}`
-      )
-    )
-  );
-  let games_info = await Promise.all(promises);
-  return extractRelevantGameData(games_info);
+  let games = await DButils.execQuery(
+    `SELECT date, time, home_team, away_team, field FROM games
+    WHERE game_id in (${game_ids_list.toString()})
+    ORDER BY date ASC, time ASC`
+  )
+  return extractRelevantGameData(games);
 }
 
 function extractRelevantGameData(games_info) {
     return games_info.map((game_info) => {
-      game_info = game_info[0];
       return {
         date: game_info.date,
         time: game_info.time,

@@ -28,8 +28,8 @@ async function getLeagueDetails() {
        ORDER BY date ASC, time ASC`
     )
   )[0];
-
-  return {
+  
+  const temp = {
     league_name: league.data.data.name,
     current_season_name: league.data.data.season.data.name,
     current_stage_name: stage.data.data.name,
@@ -40,6 +40,7 @@ async function getLeagueDetails() {
     next_game_details_away_team: next_game.away_team,
     next_game_details_field: next_game.field, 
   };
+  return temp;
 }
 
 function convertDate(date) {
