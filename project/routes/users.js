@@ -9,7 +9,7 @@ const players_utils = require("./utils/players_utils");
  */
 router.use(async function (req, res, next) {
   if (req.session && req.session.user_id) {
-    DButils.execQuery("SELECT user_id FROM users_tirgul")
+    DButils.execQuery("SELECT user_id FROM users")
       .then((users) => {
         if (users.find((x) => x.user_id === req.session.user_id)) {
           req.user_id = req.session.user_id;
@@ -35,11 +35,68 @@ router.post("/favoritePlayers", async (req, res, next) => {
     next(error);
   }
 });
-
 /**
  * This path returns the favorites players that were saved by the logged-in user
  */
-router.get("/favoritePlayers", async (req, res, next) => {
+ router.get("/favoritePlayers", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    let favorite_players = {};
+    const player_ids = await users_utils.getFavoritePlayers(user_id);
+    let player_ids_array = [];
+    player_ids.map((element) => player_ids_array.push(element.player_id)); //extracting the players ids into array
+    const results = await players_utils.getPlayersInfo(player_ids_array);
+    res.status(200).send(results);
+  } catch (error) {
+    next(error);
+  }
+});
+/*
+* This path gets body with teamId and saves this player in the favorites list of the logged in user.
+*/
+router.post("/favoriteTeams", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    const team_id = req.body.teamId;
+    await users_utils.markTeamAsFavorite(user_id, team_id);
+    res.status(201).send("The team successfully saved as favorite");
+  } catch (error) {
+    next(error);
+  }
+});
+/**
+ * This path returns the favorites teams that were saved by the logged-in user
+ */
+ router.get("/favoriteTeams", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    let favorite_players = {};
+    const player_ids = await users_utils.getFavoritePlayers(user_id);
+    let player_ids_array = [];
+    player_ids.map((element) => player_ids_array.push(element.player_id)); //extracting the players ids into array
+    const results = await players_utils.getPlayersInfo(player_ids_array);
+    res.status(200).send(results);
+  } catch (error) {
+    next(error);
+  }
+});
+/*
+* This path gets body with gameId and saves this game in the favorites list of the logged in user.
+*/
+router.post("/favoriteGames", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    const game_id = req.body.gameId;
+    await users_utils.markGameAsFavorite(user_id, game_id);
+    res.status(201).send("The game successfully saved as favorite");
+  } catch (error) {
+    next(error);
+  }
+});
+/**
+ * This path returns the favorites games that were saved by the logged-in user
+ */
+ router.get("/favoriteGames", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
     let favorite_players = {};

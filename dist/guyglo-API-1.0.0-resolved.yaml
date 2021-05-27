@@ -239,12 +239,12 @@ paths:
           description: Successfully added team to favorites.
         "409":
           description: Already in favorites. Cannot add again.
-  /users/favoriteCoaches:
+  /users/favoriteGames:
     post:
       tags:
       - user
-      summary: add coach to a user's favorites
-      description: adding coach to favorites
+      summary: add game to a user's favorites
+      description: adding game to favorites
       requestBody:
         content:
           application/json:
@@ -253,7 +253,7 @@ paths:
         required: true
       responses:
         "201":
-          description: Successfully added coach to favorites.
+          description: Successfully added game to favorites.
         "409":
           description: Already in favorites. Cannot add again.
   /users/favoritePlayers:
@@ -286,11 +286,11 @@ paths:
                 $ref: '#/components/schemas/fav_teams'
         "404":
           description: page not found
-  /users/favoriteCoaches:
+  /users/favoriteGames:
     get:
       tags:
       - user
-      summary: display user's favorite coaches
+      summary: display user's favorite games
       parameters: []
       responses:
         "200":
@@ -298,7 +298,7 @@ paths:
           content:
             aplication/json:
               schema:
-                $ref: '#/components/schemas/fav_coaches'
+                $ref: '#/components/schemas/fav_games'
         "404":
           description: page not found
   /league/addGame:
@@ -541,7 +541,7 @@ components:
     body_2:
       type: object
       properties:
-        ticket id:
+        id:
           type: integer
           example: 50
     about:
@@ -560,11 +560,11 @@ components:
     teamPreview:
       type: object
       properties:
+        teamID:
+          type: integer
         teamName:
           type: string
           example: Bayren Munich
-        teamID:
-          type: integer
         symbol:
           type: string
           example: https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/1200px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png
@@ -610,10 +610,10 @@ components:
           type: array
           itmes:
             $ref: '#/components/schemas/teamPreview'
-    fav_coches:
+    fav_games:
       type: object
       properties:
         players:
           type: array
           itmes:
-            $ref: '#/components/schemas/coachPreview'
+            $ref: '#/components/schemas/gamePreview'
