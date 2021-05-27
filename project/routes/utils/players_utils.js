@@ -45,6 +45,22 @@ function extractRelevantPlayerData(players_info) {
   });
 }
 
+async function getPlayerFull(player_id){
+  const player_full = await axios.get(`${api_domain}/players/${player_id}`, {
+    params: {
+      api_token: process.env.api_token,
+    },
+  });
+  return{
+    common_name: player_full.data.data.common_name,
+    nationality: player_full.data.data.nationality,
+    birth_date: player_full.data.data.birthdate,
+    birth_country: player_full.data.data.birthcountry,
+    height: player_full.data.data.height,
+    weight: player_full.data.data.weight,
+  };
+}
+
 async function getPlayersByTeam(team_id) {
   let player_ids_list = await getPlayerIdsByTeam(team_id);
   let players_info = await getPlayersInfo(player_ids_list);
@@ -53,3 +69,4 @@ async function getPlayersByTeam(team_id) {
 
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
+exports.getPlayerFull = getPlayerFull;

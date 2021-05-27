@@ -127,8 +127,8 @@ paths:
         style: simple
         explode: false
         schema:
-          type: string
-          example: firstName lastName
+          type: integer
+          example: 172104
       responses:
         "200":
           description: Successfully pulled player details.
@@ -350,16 +350,16 @@ components:
     playerFull:
       type: object
       properties:
-        common name:
+        common_name:
           type: string
           example: messi
         nationality:
           type: string
           example: Italy
-        birth date:
+        birth_date:
           type: string
           example: 1991-07-31
-        birth country:
+        birth_country:
           type: string
           example: Italy
         height:
@@ -372,10 +372,10 @@ components:
     coachPreview:
       type: object
       properties:
-        full name:
+        full_name:
           type: string
           example: Israel Israeli
-        current team name:
+        current_team_name:
           type: string
           example: Inter
         picture:
@@ -384,16 +384,16 @@ components:
     coachFull:
       type: object
       properties:
-        common name:
+        common_name:
           type: string
           example: alon
         nationality:
           type: string
           example: Italy
-        birth date:
+        birth_date:
           type: string
           example: 1991-07-31
-        birth country:
+        birth_country:
           type: string
           example: Italy
       description: full information about coach.
@@ -402,11 +402,11 @@ components:
       properties:
         full name:
           type: string
-        current season:
+        current_season:
           type: string
-        current stage:
+        current_stage:
           type: string
-        next game:
+        next_game:
           type: string
       description: information about some leagues - name, current season, current stage, next game detail
     game:
@@ -474,10 +474,10 @@ components:
           minLength: 3
           type: string
           example: Israel
-        first name:
+        first_name:
           type: string
           example: Israel
-        last name:
+        last_name:
           type: string
           example: Israeli
         country:
@@ -488,7 +488,7 @@ components:
           minLength: 5
           type: string
           example: israel1!
-        confirmation password:
+        confirmation_password:
           maxLength: 10
           minLength: 5
           type: string
@@ -524,16 +524,16 @@ components:
     player_response:
       type: object
       properties:
-        Player preview:
+        Player_preview:
           $ref: '#/components/schemas/playerPreview'
-        Player full:
+        Player_full:
           $ref: '#/components/schemas/playerFull'
     coach_response:
       type: object
       properties:
-        Coach preview:
+        Coach_preview:
           $ref: '#/components/schemas/coachPreview'
-        Coach full:
+        Coach_full:
           $ref: '#/components/schemas/coachFull'
     body_2:
       type: object
