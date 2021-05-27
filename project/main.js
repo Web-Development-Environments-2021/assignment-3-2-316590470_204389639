@@ -77,7 +77,7 @@ app.use(function (req, res, next) {
 //#endregion
 
 // ----> For cheking that our server is alive
-app.get("/alive", (req, res) => res.send("I'm alive"));
+app.get("/alive", (req, res) => res.send("I'm aliveeeeee"));
 
 // getting home page
 // app.get('/', (req, res) => {

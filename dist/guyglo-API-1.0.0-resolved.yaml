@@ -222,6 +222,20 @@ paths:
           description: Successfully added player to favorites.
         "409":
           description: Already in favorites. Cannot add again.
+    get:
+      tags:
+      - user
+      summary: display user's favorite players
+      parameters: []
+      responses:
+        "200":
+          description: sucsess
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/fav_players'
+        "404":
+          description: page not found
   /users/favoriteTeams:
     post:
       tags:
@@ -239,39 +253,6 @@ paths:
           description: Successfully added team to favorites.
         "409":
           description: Already in favorites. Cannot add again.
-  /users/favoriteCoaches:
-    post:
-      tags:
-      - user
-      summary: add coach to a user's favorites
-      description: adding coach to favorites
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_2'
-        required: true
-      responses:
-        "201":
-          description: Successfully added coach to favorites.
-        "409":
-          description: Already in favorites. Cannot add again.
-  /users/favoritePlayers:
-    get:
-      tags:
-      - user
-      summary: display user's favorite players
-      parameters: []
-      responses:
-        "200":
-          description: sucsess
-          content:
-            aplication/json:
-              schema:
-                $ref: '#/components/schemas/fav_players'
-        "404":
-          description: page not found
-  /users/favoriteTeams:
     get:
       tags:
       - user
@@ -286,11 +267,27 @@ paths:
                 $ref: '#/components/schemas/fav_teams'
         "404":
           description: page not found
-  /users/favoriteCoaches:
+  /users/favoriteGames:
+    post:
+      tags:
+      - user
+      summary: add game to a user's favorites
+      description: adding game to favorites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+        required: true
+      responses:
+        "201":
+          description: Successfully added game to favorites.
+        "409":
+          description: Already in favorites. Cannot add again.
     get:
       tags:
       - user
-      summary: display user's favorite coaches
+      summary: display user's favorite games
       parameters: []
       responses:
         "200":
@@ -298,7 +295,7 @@ paths:
           content:
             aplication/json:
               schema:
-                $ref: '#/components/schemas/fav_coaches'
+                $ref: '#/components/schemas/fav_games'
         "404":
           description: page not found
   /league/addGame:
@@ -541,7 +538,7 @@ components:
     body_2:
       type: object
       properties:
-        ticket id:
+        id:
           type: integer
           example: 50
     about:
@@ -560,11 +557,11 @@ components:
     teamPreview:
       type: object
       properties:
+        teamID:
+          type: integer
         teamName:
           type: string
           example: Bayren Munich
-        teamID:
-          type: integer
         symbol:
           type: string
           example: https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/1200px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png
@@ -606,14 +603,14 @@ components:
     fav_teams:
       type: object
       properties:
-        players:
+        teams:
           type: array
           itmes:
             $ref: '#/components/schemas/teamPreview'
-    fav_coches:
+    fav_games:
       type: object
       properties:
-        players:
+        games:
           type: array
           itmes:
-            $ref: '#/components/schemas/coachPreview'
+            $ref: '#/components/schemas/gamePreview'

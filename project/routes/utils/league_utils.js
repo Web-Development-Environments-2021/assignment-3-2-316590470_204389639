@@ -30,7 +30,7 @@ async function getLeagueDetails() {
        ORDER BY date ASC, time ASC`
     )
   )[0];
-  console.log(next_game)
+  //console.log(next_game)
   return {
     league_name: league.data.data.name,
     current_season_name: league.data.data.season.data.name,
@@ -56,3 +56,4 @@ function convertDate(date) {
 }
 
 exports.getLeagueDetails = getLeagueDetails;
+exports.convertDate = convertDate;
