@@ -3,6 +3,7 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const players_utils = require("./utils/players_utils");
 const league = require("./utils/league_utils");
+const teams_utils = require("./utils/teams_utils")
 
 router.get("/:teamId/ticketDetails", async (req, res, next) => {
   let team_details = [];

@@ -4,6 +4,8 @@
 
 const DButils = require("./routes/utils/DButils");
 const league_utils = require("./routes/utils/league_utils");
+const user_utils = require("./routes/utils/users_utils");
+const game_utils = require("./routes/utils/games_utils");
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
@@ -55,7 +57,8 @@ const auth = require("./routes/auth");
 const users = require("./routes/users");
 const league = require("./routes/league");
 const teams = require("./routes/teams");
-const router = require("./routes/league");
+const players = require("./routes/players");
+const coaches = require("./routes/coaches")
 
 //#endregion
 
@@ -80,19 +83,36 @@ app.use(function (req, res, next) {
 app.get("/alive", (req, res) => res.send("I'm aliveeeeee"));
 
 // getting home page
-// app.get('/', (req, res) => {
-//   try{
-//     const league_details = league_utils.getLeagueDetails();
-//     // const favorite_games = 
-//   } catch (error){
-//     next(error);
-//   }
-// });
+app.get('/', async (req, res, next) => {
+  try{
+    const league_details = await league_utils.getLeagueDetails();
+    let fav_games_details = null;
+    if (req.session && req.session.user_id){
+      const user_id = req.session.user_id;
+      fav_games_details = await user_utils.getFavoriteGames(user_id);
+      let top_3_games = "no favorite games were found";
+      // if no games were found
+      if(fav_games_details != null){
+        const num_fav_games = Object.keys(fav_games_details).length;
+        if(num_fav_games < 3)
+          top_3_games = fav_games_details.slice(0,num_fav_games);
+        else
+          top_3_games = fav_games_details.slice(0,3);
+      }
+      res.status(200).send([league_details,top_3_games]);
+    }
+    else{res.status(200).send(league_details);}
+  } catch (error){
+    next(error);
+  }
+});
 
 // Routings
 app.use("/users", users);
 app.use("/league", league);
 app.use("/teams", teams);
+app.use("/players", players);
+// app.use("/coaches", coaches)
 app.use(auth);
 
 app.use(function (err, req, res, next) {

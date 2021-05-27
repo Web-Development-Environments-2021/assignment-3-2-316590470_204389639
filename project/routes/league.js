@@ -31,10 +31,15 @@ router.post("/addGame", async (req, res, next) => {
       throw { status: 401, message: "Unauthorized" };
     }
 
+    let games_id = await DButils.execQuery(
+      'SELECT * FROM games'
+    );
+    games_id = games_id.length+1;
+    
     // add the new game
     await DButils.execQuery(
-      `INSERT INTO games (date, time, home_team, away_team, field, home_goal, away_goal, event)
-       VALUES ('${date}', '${time}', '${home_team}', '${away_team}'
+      `INSERT INTO games (game_id, date, time, home_team, away_team, field, home_goal, away_goal, event)
+       VALUES (${games_id}, '${date}', '${time}', '${home_team}', '${away_team}'
        , '${field}', NULL, NULL, NULL)`
     );
     res.status(201).send("game added");
