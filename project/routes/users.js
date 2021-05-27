@@ -70,11 +70,11 @@ router.post("/favoriteTeams", async (req, res, next) => {
  router.get("/favoriteTeams", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    let favorite_players = {};
-    const player_ids = await users_utils.getFavoritePlayers(user_id);
-    let player_ids_array = [];
-    player_ids.map((element) => player_ids_array.push(element.player_id)); //extracting the players ids into array
-    const results = await players_utils.getPlayersInfo(player_ids_array);
+    let favorite_teams = {};
+    const team_ids = await users_utils.getFavoriteTeams(user_id);
+    let team_ids_array = [];
+    team_ids.map((element) => team_ids_array.push(element.team_id)); //extracting the teams ids into array
+    const results = await teams_utils.getPlayersInfo(team_ids_array); // wrong function. should get team info. + create team_utils.
     res.status(200).send(results);
   } catch (error) {
     next(error);
@@ -99,11 +99,11 @@ router.post("/favoriteGames", async (req, res, next) => {
  router.get("/favoriteGames", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    let favorite_players = {};
-    const player_ids = await users_utils.getFavoritePlayers(user_id);
-    let player_ids_array = [];
-    player_ids.map((element) => player_ids_array.push(element.player_id)); //extracting the players ids into array
-    const results = await players_utils.getPlayersInfo(player_ids_array);
+    let favorite_games = {};
+    const game_ids = await users_utils.getFavoritePlayers(user_id);
+    let game_ids_array = [];
+    game_ids.map((element) => game_ids_array.push(element.game_id)); //extracting the games ids into array
+    const results = await games_utils.getPlayersInfo(game_ids_array); // wrong function. should get game info. + create game_utils.
     res.status(200).send(results);
   } catch (error) {
     next(error);
