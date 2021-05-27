@@ -222,6 +222,20 @@ paths:
           description: Successfully added player to favorites.
         "409":
           description: Already in favorites. Cannot add again.
+    get:
+      tags:
+      - user
+      summary: display user's favorite players
+      parameters: []
+      responses:
+        "200":
+          description: sucsess
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/fav_players'
+        "404":
+          description: page not found
   /users/favoriteTeams:
     post:
       tags:
@@ -239,6 +253,20 @@ paths:
           description: Successfully added team to favorites.
         "409":
           description: Already in favorites. Cannot add again.
+    get:
+      tags:
+      - user
+      summary: display user's favorite teams
+      parameters: []
+      responses:
+        "200":
+          description: sucsess
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/fav_teams'
+        "404":
+          description: page not found
   /users/favoriteGames:
     post:
       tags:
@@ -256,37 +284,6 @@ paths:
           description: Successfully added game to favorites.
         "409":
           description: Already in favorites. Cannot add again.
-  /users/favoritePlayers:
-    get:
-      tags:
-      - user
-      summary: display user's favorite players
-      parameters: []
-      responses:
-        "200":
-          description: sucsess
-          content:
-            aplication/json:
-              schema:
-                $ref: '#/components/schemas/fav_players'
-        "404":
-          description: page not found
-  /users/favoriteTeams:
-    get:
-      tags:
-      - user
-      summary: display user's favorite teams
-      parameters: []
-      responses:
-        "200":
-          description: sucsess
-          content:
-            aplication/json:
-              schema:
-                $ref: '#/components/schemas/fav_teams'
-        "404":
-          description: page not found
-  /users/favoriteGames:
     get:
       tags:
       - user
@@ -606,14 +603,14 @@ components:
     fav_teams:
       type: object
       properties:
-        players:
+        teams:
           type: array
           itmes:
             $ref: '#/components/schemas/teamPreview'
     fav_games:
       type: object
       properties:
-        players:
+        games:
           type: array
           itmes:
             $ref: '#/components/schemas/gamePreview'

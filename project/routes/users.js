@@ -74,7 +74,7 @@ router.post("/favoriteTeams", async (req, res, next) => {
     const team_ids = await users_utils.getFavoriteTeams(user_id);
     let team_ids_array = [];
     team_ids.map((element) => team_ids_array.push(element.team_id)); //extracting the teams ids into array
-    const results = await teams_utils.getPlayersInfo(team_ids_array); // wrong function. should get team info. + create team_utils.
+    const results = await teams_utils.getTeamsInfo(team_ids_array); 
     res.status(200).send(results);
   } catch (error) {
     next(error);
@@ -103,7 +103,7 @@ router.post("/favoriteGames", async (req, res, next) => {
     const game_ids = await users_utils.getFavoritePlayers(user_id);
     let game_ids_array = [];
     game_ids.map((element) => game_ids_array.push(element.game_id)); //extracting the games ids into array
-    const results = await games_utils.getPlayersInfo(game_ids_array); // wrong function. should get game info. + create game_utils.
+    const results = await games_utils.getGamesInfo(game_ids_array); 
     res.status(200).send(results);
   } catch (error) {
     next(error);

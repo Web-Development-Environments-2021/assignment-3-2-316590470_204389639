@@ -83,7 +83,8 @@ app.get("/alive", (req, res) => res.send("I'm alive"));
 // app.get('/', (req, res) => {
 //   try{
 //     const league_details = league_utils.getLeagueDetails();
-//     // const favorite_games = 
+//     const favorite_games = 
+//     res.status(200).send({league_details, favorite_games});
 //   } catch (error){
 //     next(error);
 //   }
@@ -94,6 +95,8 @@ app.use("/users", users);
 app.use("/league", league);
 app.use("/teams", teams);
 app.use(auth);
+
+
 
 app.use(function (err, req, res, next) {
   console.error(err);
