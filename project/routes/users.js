@@ -3,6 +3,8 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const users_utils = require("./utils/users_utils");
 const players_utils = require("./utils/players_utils");
+const games_utils = require("./utils/games_utils");
+const teams_utils = require("./utils/teams_utils");
 
 /**
  * Authenticate all incoming requests by middleware
@@ -28,7 +30,7 @@ router.use(async function (req, res, next) {
 router.post("/favoritePlayers", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    const player_id = req.body.playerId;
+    const player_id = req.body.id;
     await users_utils.markPlayerAsFavorite(user_id, player_id);
     res.status(201).send("The player successfully saved as favorite");
   } catch (error) {
@@ -57,7 +59,7 @@ router.post("/favoritePlayers", async (req, res, next) => {
 router.post("/favoriteTeams", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    const team_id = req.body.teamId;
+    const team_id = req.body.id;
     await users_utils.markTeamAsFavorite(user_id, team_id);
     res.status(201).send("The team successfully saved as favorite");
   } catch (error) {
@@ -86,7 +88,7 @@ router.post("/favoriteTeams", async (req, res, next) => {
 router.post("/favoriteGames", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    const game_id = req.body.gameId;
+    const game_id = req.body.id;
     await users_utils.markGameAsFavorite(user_id, game_id);
     res.status(201).send("The game successfully saved as favorite");
   } catch (error) {
@@ -100,7 +102,7 @@ router.post("/favoriteGames", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
     let favorite_games = {};
-    const game_ids = await users_utils.getFavoritePlayers(user_id);
+    const game_ids = await users_utils.getFavoriteGames(user_id);
     let game_ids_array = [];
     game_ids.map((element) => game_ids_array.push(element.game_id)); //extracting the games ids into array
     const results = await games_utils.getGamesInfo(game_ids_array); 

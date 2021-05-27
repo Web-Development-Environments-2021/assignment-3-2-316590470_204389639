@@ -5,10 +5,10 @@ async function getGamesInfo(game_ids_list){
   let promises = [];
   game_ids_list.map((id) =>
     promises.push(
-      (DButils.execQuery(
+      DButils.execQuery(
           `SELECT date, time, home_team, away_team, field FROM games
           WHERE game_id = ${id}`
-      ))[0]
+      )
     )
   );
   let games_info = await Promise.all(promises);
@@ -17,6 +17,7 @@ async function getGamesInfo(game_ids_list){
 
 function extractRelevantGameData(games_info) {
     return games_info.map((game_info) => {
+      game_info = game_info[0];
       return {
         date: game_info.date,
         time: game_info.time,

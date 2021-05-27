@@ -19,11 +19,11 @@ async function markGameAsFavorite(user_id, game_id){
   );
 }
 
-async function getFavoriteGames(game_id) {
-  const player_ids = await DButils.execQuery(
-    `select player_id from fav_games where user_id='${user_id}'`
+async function getFavoriteGames(user_id) {
+  const game_ids = await DButils.execQuery(
+    `select game_id from fav_games where user_id='${user_id}'`
   );
-  return player_ids;
+  return game_ids;
 }
 
 async function markTeamAsFavorite(user_id, team_id){
@@ -32,11 +32,11 @@ async function markTeamAsFavorite(user_id, team_id){
   );
 }
 
-async function getFavoriteTeams(team_id) {
-  const player_ids = await DButils.execQuery(
-    `select player_id from fav_teams where user_id='${user_id}'`
+async function getFavoriteTeams(user_id) {
+  const team_ids = await DButils.execQuery(
+    `select team_id from fav_teams where user_id='${user_id}'`
   );
-  return player_ids;
+  return team_ids;
 }
 
 exports.markPlayerAsFavorite = markPlayerAsFavorite;
