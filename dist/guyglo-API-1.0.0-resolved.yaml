@@ -127,8 +127,8 @@ paths:
         style: simple
         explode: false
         schema:
-          type: string
-          example: firstName lastName
+          type: integer
+          example: 172104
       responses:
         "200":
           description: Successfully pulled player details.
@@ -222,6 +222,20 @@ paths:
           description: Successfully added player to favorites.
         "409":
           description: Already in favorites. Cannot add again.
+    get:
+      tags:
+      - user
+      summary: display user's favorite players
+      parameters: []
+      responses:
+        "200":
+          description: sucsess
+          content:
+            aplication/json:
+              schema:
+                $ref: '#/components/schemas/fav_players'
+        "404":
+          description: page not found
   /users/favoriteTeams:
     post:
       tags:
@@ -239,39 +253,6 @@ paths:
           description: Successfully added team to favorites.
         "409":
           description: Already in favorites. Cannot add again.
-  /users/favoriteCoaches:
-    post:
-      tags:
-      - user
-      summary: add coach to a user's favorites
-      description: adding coach to favorites
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_2'
-        required: true
-      responses:
-        "201":
-          description: Successfully added coach to favorites.
-        "409":
-          description: Already in favorites. Cannot add again.
-  /users/favoritePlayers:
-    get:
-      tags:
-      - user
-      summary: display user's favorite players
-      parameters: []
-      responses:
-        "200":
-          description: sucsess
-          content:
-            aplication/json:
-              schema:
-                $ref: '#/components/schemas/fav_players'
-        "404":
-          description: page not found
-  /users/favoriteTeams:
     get:
       tags:
       - user
@@ -286,11 +267,27 @@ paths:
                 $ref: '#/components/schemas/fav_teams'
         "404":
           description: page not found
-  /users/favoriteCoaches:
+  /users/favoriteGames:
+    post:
+      tags:
+      - user
+      summary: add game to a user's favorites
+      description: adding game to favorites
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+        required: true
+      responses:
+        "201":
+          description: Successfully added game to favorites.
+        "409":
+          description: Already in favorites. Cannot add again.
     get:
       tags:
       - user
-      summary: display user's favorite coaches
+      summary: display user's favorite games
       parameters: []
       responses:
         "200":
@@ -298,7 +295,7 @@ paths:
           content:
             aplication/json:
               schema:
-                $ref: '#/components/schemas/fav_coaches'
+                $ref: '#/components/schemas/fav_games'
         "404":
           description: page not found
   /league/addGame:
@@ -353,16 +350,16 @@ components:
     playerFull:
       type: object
       properties:
-        common name:
+        common_name:
           type: string
           example: messi
         nationality:
           type: string
           example: Italy
-        birth date:
+        birth_date:
           type: string
           example: 1991-07-31
-        birth country:
+        birth_country:
           type: string
           example: Italy
         height:
@@ -375,10 +372,10 @@ components:
     coachPreview:
       type: object
       properties:
-        full name:
+        full_name:
           type: string
           example: Israel Israeli
-        current team name:
+        current_team_name:
           type: string
           example: Inter
         picture:
@@ -387,16 +384,16 @@ components:
     coachFull:
       type: object
       properties:
-        common name:
+        common_name:
           type: string
           example: alon
         nationality:
           type: string
           example: Italy
-        birth date:
+        birth_date:
           type: string
           example: 1991-07-31
-        birth country:
+        birth_country:
           type: string
           example: Italy
       description: full information about coach.
@@ -405,11 +402,11 @@ components:
       properties:
         full name:
           type: string
-        current season:
+        current_season:
           type: string
-        current stage:
+        current_stage:
           type: string
-        next game:
+        next_game:
           type: string
       description: information about some leagues - name, current season, current stage, next game detail
     game:
@@ -477,10 +474,10 @@ components:
           minLength: 3
           type: string
           example: Israel
-        first name:
+        first_name:
           type: string
           example: Israel
-        last name:
+        last_name:
           type: string
           example: Israeli
         country:
@@ -491,7 +488,7 @@ components:
           minLength: 5
           type: string
           example: israel1!
-        confirmation password:
+        confirmation_password:
           maxLength: 10
           minLength: 5
           type: string
@@ -527,21 +524,21 @@ components:
     player_response:
       type: object
       properties:
-        Player preview:
+        Player_preview:
           $ref: '#/components/schemas/playerPreview'
-        Player full:
+        Player_full:
           $ref: '#/components/schemas/playerFull'
     coach_response:
       type: object
       properties:
-        Coach preview:
+        Coach_preview:
           $ref: '#/components/schemas/coachPreview'
-        Coach full:
+        Coach_full:
           $ref: '#/components/schemas/coachFull'
     body_2:
       type: object
       properties:
-        ticket id:
+        id:
           type: integer
           example: 50
     about:
@@ -560,11 +557,11 @@ components:
     teamPreview:
       type: object
       properties:
+        teamID:
+          type: integer
         teamName:
           type: string
           example: Bayren Munich
-        teamID:
-          type: integer
         symbol:
           type: string
           example: https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/1200px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png
@@ -606,14 +603,14 @@ components:
     fav_teams:
       type: object
       properties:
-        players:
+        teams:
           type: array
           itmes:
             $ref: '#/components/schemas/teamPreview'
-    fav_coches:
+    fav_games:
       type: object
       properties:
-        players:
+        games:
           type: array
           itmes:
-            $ref: '#/components/schemas/coachPreview'
+            $ref: '#/components/schemas/gamePreview'
