@@ -21,14 +21,16 @@ async function getLeagueDetails() {
     }
   );
   // find next closest game
+  let tdate = convertDate(new Date());
   const next_game = (
+    
     await DButils.execQuery(
       `SELECT TOP 1 date, time, home_team, away_team, field FROM games
-       WHERE date >= '${convertDate(new Date())}'
+       WHERE date >= '${tdate}'
        ORDER BY date ASC, time ASC`
     )
   )[0];
-
+  console.log(next_game)
   return {
     league_name: league.data.data.name,
     current_season_name: league.data.data.season.data.name,
@@ -42,7 +44,7 @@ async function getLeagueDetails() {
   };
 }
 
-async function convertDate(date) {
+function convertDate(date) {
   var yyyy = date.getFullYear().toString();
   var mm = (date.getMonth()+1).toString();
   var dd  = date.getDate().toString();
