@@ -138,6 +138,34 @@ paths:
                 $ref: '#/components/schemas/player_response'
         "204":
           description: No such player id.
+
+  /players/search/{name}:
+      get:
+        tags:
+        - player
+        summary: search a player by partial name or full name
+        paramaters:
+          - name: name
+            in: path
+            description: name of player
+            required: true
+            style: simple
+            explode: false
+            schema:
+              type: string
+              example: 'messi'
+        responses:
+          "200":
+            description: Successfully pulled player details.
+            content:
+              application/json:
+                schema:
+                  players:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/playerPreview'
+          "204":
+            description: No such player id.
   /coaches/{coachId}/ticketDetails:
     get:
       tags:
