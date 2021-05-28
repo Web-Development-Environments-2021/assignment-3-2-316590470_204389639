@@ -26,7 +26,7 @@ async function getLeagueDetails() {
   const next_game = (
     
     await DButils.execQuery(
-      `SELECT TOP 1 date, time, home_team, away_team, field FROM games
+      `SELECT TOP 1 game_id, date, time, home_team, away_team, field FROM games
        WHERE date >= '${tdate}'
        ORDER BY date ASC, time ASC`
     )
@@ -58,6 +58,7 @@ function convertDate(date) {
 
   return yyyy + '-' + (mmChars[1]?mm:"0"+mmChars[0]) + '-' + (ddChars[1]?dd:"0"+ddChars[0]);
 }
+
 
 exports.getLeagueDetails = getLeagueDetails;
 exports.convertDate = convertDate;

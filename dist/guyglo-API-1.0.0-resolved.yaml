@@ -39,6 +39,8 @@ paths:
                 $ref: '#/components/schemas/homePage'
         "400":
           description: The server could not understand the request due to invalid syntax
+        "404":
+          description: Bad Request. Could not find the requested URL.
         "409":
           description: Can't complete the request.
   /about:
@@ -54,7 +56,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/about'
         "404":
-          description: cannot find about page
+          description: Bad Request. Could not find the requested URL.
   /register:
     post:
       tags:
@@ -72,7 +74,7 @@ paths:
         "400":
           description: Could not register since some fields are empty. You must fill all fields.
         "409":
-          description: username already exist
+          description: Username already exist
   /login:
     post:
       tags:
@@ -94,16 +96,16 @@ paths:
               schema:
                 type: string
                 example: session=v1ad5vad1v5adv
-        "400":
+        "401":
           description: Authorization has failed due to wrong username or password.
   /logout:
-    get:
+    post:
       tags:
       - user
       summary: logout from user
       parameters: []
       responses:
-        "200":
+        "205":
           description: sucsessful logout
           headers:
             Set-Cookie:
@@ -138,7 +140,8 @@ paths:
                 $ref: '#/components/schemas/player_response'
         "204":
           description: No such player id.
-
+        "404":
+          description: Bad Request. Could not find the requested URL.
   /players/search/{name}:
       get:
         tags:
@@ -166,6 +169,8 @@ paths:
                       $ref: '#/components/schemas/playerPreview'
           "204":
             description: No such player id.
+          "404":
+            description: Bad Request. Could not find the requested URL.
   /coaches/{coachId}/ticketDetails:
     get:
       tags:
@@ -191,6 +196,8 @@ paths:
                 $ref: '#/components/schemas/coach_response'
         "204":
           description: No such coach id.
+        "404":
+          description: Bad Request. Could not find the requested URL.
   /teams/{teamId}/ticketDetails:
     get:
       tags:
@@ -216,6 +223,8 @@ paths:
                 $ref: '#/components/schemas/team_response'
         "204":
           description: No such coach id.
+        "404":
+          description: Bad Request. Could not find the requested URL.
   /users/addFavorite:
     post:
       tags:
@@ -233,6 +242,8 @@ paths:
           description: Successfully added to favorites.
         "409":
           description: Already in favorites. Cannot add again.
+      security:
+        - cookieAuth: []
   /users/favoritePlayers:
     post:
       tags:
@@ -263,7 +274,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/fav_players'
         "404":
-          description: page not found
+          description: Bad Request. Could not find the requested URL.
+    security:
+      - cookieAuth: []
   /users/favoriteTeams:
     post:
       tags:
@@ -294,7 +307,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/fav_teams'
         "404":
-          description: page not found
+          description: Bad Request. Could not find the requested URL.
+    security:
+        - cookieAuth: []
   /users/favoriteGames:
     post:
       tags:
@@ -325,7 +340,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/fav_games'
         "404":
-          description: page not found
+          description: Bad Request. Could not find the requested URL.
+    security:
+      - cookieAuth: []
   /league/addGame:
     post:
       tags:
@@ -344,6 +361,8 @@ paths:
           description: Bad request, some fields are wrong.
         "401":
           description: Unauthorized, you have no permissions.
+    security:
+      - cookieAuth: []
   /league/current_games:
     get:
       tags:
@@ -357,9 +376,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/current_games'
         "404":
-          description: page not found
+          description: Bad Request. Could not find the requested URL.
 components:
   schemas:
+    securitySchemes:
+      cookieAuth: 
+        type: apiKey
+        in: cookie
     playerPreview:
       type: object
       properties:

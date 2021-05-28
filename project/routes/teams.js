@@ -5,14 +5,18 @@ const players_utils = require("./utils/players_utils");
 const league = require("./utils/league_utils");
 const teams_utils = require("./utils/teams_utils")
 
+/*
+* getting details about teamId:
+  entire players, past and future games.
+*/
 router.get("/:teamId/ticketDetails", async (req, res, next) => {
   let team_details = [];
-
   try {
-
     let tdate = league.convertDate(new Date())
     let past_games = await DButils.execQuery(`select * from games where (home_team = '${req.params.teamId}' or away_team ='${req.params.teamId}') and date < '${tdate}' `);
     let future_games = await DButils.execQuery(`select * from games where (home_team = '${req.params.teamId}' or away_team ='${req.params.teamId}') and date >= '${tdate}'`);
+    // getting all games' by teams' names.
+
     let all_games = {
       past_games: past_games,
       future_games:future_games

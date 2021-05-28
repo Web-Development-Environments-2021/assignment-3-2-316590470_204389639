@@ -63,9 +63,9 @@ router.post("/login", async (req, res, next) => {
 
 
 // not working
-router.post("/Logout", function (req, res) {
+router.post("/logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
-  res.send({ success: true, message: "logout succeeded" });
+  res.status(205).send({ success: true, message: "logout succeeded" });
 });
 
 module.exports = router;
