@@ -26,3 +26,4 @@
 
 -- select * from users
 -- select * from fav_games
+-- select * from games
