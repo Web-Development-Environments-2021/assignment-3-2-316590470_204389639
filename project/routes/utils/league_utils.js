@@ -22,10 +22,12 @@ async function getLeagueDetails() {
     }
   );
   // find next closest game
+  let tdate = convertDate(new Date());
   const next_game = (
+    
     await DButils.execQuery(
-      `SELECT TOP 1 game_id FROM games
-       WHERE date >= '${convertDate(new Date())}'
+      `SELECT TOP 1 date, time, home_team, away_team, field FROM games
+       WHERE date >= '${tdate}'
        ORDER BY date ASC, time ASC`
     )
   )[0];
@@ -58,3 +60,4 @@ function convertDate(date) {
 }
 
 exports.getLeagueDetails = getLeagueDetails;
+exports.convertDate = convertDate;
