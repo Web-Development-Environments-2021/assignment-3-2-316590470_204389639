@@ -270,7 +270,7 @@ paths:
         "200":
           description: sucsess
           content:
-            aplication/json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/fav_players'
         "404":
@@ -303,7 +303,7 @@ paths:
         "200":
           description: sucsess
           content:
-            aplication/json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/fav_teams'
         "404":
@@ -377,6 +377,37 @@ paths:
                 $ref: '#/components/schemas/current_games'
         "404":
           description: Bad Request. Could not find the requested URL.
+  /games/addResult:
+    post:
+      tags:
+      - games
+      description: add result to finished game.
+      required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                game_id:
+                  type: int
+                  example: 83
+                home_team_result:
+                  type: int
+                  example: 1
+                away_team_result:
+                  type: int
+                  example: 2
+      responses:
+        "201":
+          description: Successfully added game's results.
+        "401":
+          description: Unauthorized, you have no permissions.
+        "409":
+          description: Already has a result.
+      security:
+      - cookieAuth: []
+
 components:
   schemas:
     securitySchemes:
