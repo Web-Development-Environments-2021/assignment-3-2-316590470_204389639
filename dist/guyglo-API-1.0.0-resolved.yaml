@@ -407,6 +407,36 @@ paths:
           description: Already has a result.
       security:
       - cookieAuth: []
+  /games/addEvent:
+    post:
+      tags:
+      - games
+      description: add event to not-finished game.
+      required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                game_id:
+                  type: int
+                  example: 83
+                minute:
+                  type: int
+                  example: 43
+                description:
+                  type: string
+                  exmaple: 'foul'
+      responses:
+        "201":
+          description: Successfully added game's event.
+        "401":
+          description: Unauthorized, you have no permissions.
+        "409":
+          description: Denied, game has finished.
+      security:
+      - cookieAuth: []
 
 components:
   schemas:
@@ -543,8 +573,8 @@ components:
       type: object
       properties:
         minute:
-          type: string
-          example: 45'
+          type: int
+          example: 45
         description:
           type: string
           example: foul

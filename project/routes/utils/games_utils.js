@@ -109,7 +109,30 @@ async function gameHasFinishedAlready(game_id){
   return 0;
 }
 
+async function getGameDate(game_id){
+  const game = (await DButils.execQuery(
+    `select date from games
+     where game_id = ${game_id};`)
+  )[0];
+  return game.date;
+}
+
+async function addEventToGame(game_id, minute, description){
+  const next_event_id = (await DButils.execQuery(
+    'select * from events'
+  ));
+
+  next_event_id = next_event_id.length+1;
+  // what about game_date? 
+  // const game_date = await getGameDate(game_id);
+  DButils.execQuery(
+    `insert into events (EID, GID, minute, description)
+    value (${next_event_id}, ${game_id}, ${minute}, '${description}');`
+  );
+}
 
 exports.getGamesInfo = getGamesInfo;
 exports.addResultToGame = addResultToGame;
 exports.gameHasFinishedAlready = gameHasFinishedAlready;
+exports.getGameDate = getGameDate;
+exports.addEventToGame = addEventToGame;

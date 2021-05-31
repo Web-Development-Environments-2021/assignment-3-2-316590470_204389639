@@ -24,6 +24,6 @@
 --     field varchar(20) not null,
 -- );
 
--- select * from users
+select * from users
 -- select * from fav_games
 -- select * from games
