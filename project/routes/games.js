@@ -66,7 +66,7 @@ router.post('/addEvent', async (req, res, next) => {
     }
     // add event to game
     const success = await games_utils.addEventToGame(game_id, event_minute, event_desc);
-    res.send(201).send("Event was added successfully");
+    res.status(201).send("Event was added successfully");
   }catch(error){
     next(error);
   }

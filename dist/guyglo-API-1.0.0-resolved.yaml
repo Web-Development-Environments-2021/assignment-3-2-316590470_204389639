@@ -572,12 +572,36 @@ components:
     event:
       type: object
       properties:
+        date:
+          type: string
+          example: 2021-06-30
+        hour:
+          type: string
+          example: 15:30:00
         minute:
           type: int
           example: 45
         description:
-          type: string
-          example: foul
+          $ref: '#/components/schemas/event_description'
+          example: red card messi
+    event_type:
+      type: string
+      enum:
+        - goal
+        - offside
+        - offense
+        - red card
+        - yellow card
+        - injury
+        - substitution
+    event_description:
+      type: object
+      properties:
+        event_type:
+          $ref: '#/components/schemas/event_type'
+        player_id:
+          type: int
+          exmaple: 20
     registerBody:
       type: object
       properties:
