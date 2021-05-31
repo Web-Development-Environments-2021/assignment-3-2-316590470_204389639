@@ -12,20 +12,13 @@ const teams_utils = require("./utils/teams_utils")
 router.get("/:teamId/ticketDetails", async (req, res, next) => {
   let team_details = [];
   try {
-    let tdate = league.convertDate(new Date())
-    let past_games = await DButils.execQuery(`select * from games where (home_team = '${req.params.teamId}' or away_team ='${req.params.teamId}') and date < '${tdate}' `);
-    let future_games = await DButils.execQuery(`select * from games where (home_team = '${req.params.teamId}' or away_team ='${req.params.teamId}') and date >= '${tdate}'`);
-    // getting all games' by teams' names.
-
-    let all_games = {
-      past_games: past_games,
-      future_games:future_games
-    }
+   
+    let all_games = await teams_utils.getPastAndFutureGames(req.params.teamId);
     const team_details = await players_utils.getPlayersByTeam(
       req.params.teamId
     );
     //we should keep implementing team page.....
-    res.send([team_details , all_games]);
+    res.status(200).send([team_details , all_games]);
   } catch (error) {
     next(error);
   }

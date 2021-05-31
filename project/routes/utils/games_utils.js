@@ -32,7 +32,7 @@ async function getGamesInfo(game_ids_list){
 }
 
 /*
-* returns *occured* already games according to gameFull:
+  returns *occured* already games according to gameFull:
   date, time, home team, away team and field, home goal, away goal, event.
 */
 async function getOldGamesInfo(game_ids_list){
@@ -84,5 +84,19 @@ function extractRelevantGameData(games_info) {
       };
     });
   }
-
+async function getGameEvents(GID){
+  const eventList = await DButils.execQuery(
+    `select * from events where GID = ${GID}`
+    );
+  let promise =await Promise.all(eventList)
+  return eventList.map((event)=>{
+    return{
+      minute: event.minute,
+      description: event.description,
+    };
+    
+  });
+  
+}
+exports.getGameEvents = getGameEvents;
 exports.getGamesInfo = getGamesInfo;

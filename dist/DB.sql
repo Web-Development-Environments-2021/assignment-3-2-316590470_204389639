@@ -1,5 +1,6 @@
 
-SELECT name FROM  players where name like '%i%'
+select * from games
+
 -- create table players(
 --     name varchar(30) not null UNIQUE,
 --     id int 
