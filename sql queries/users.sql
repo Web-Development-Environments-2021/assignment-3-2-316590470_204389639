@@ -24,6 +24,15 @@
 --     field varchar(20) not null,
 -- );
 
+-- drop table users;
+
+-- create table users(
+--     user_id int not null UNIQUE,
+--     username varchar(255) not null, 
+--     password VARCHAR(255) not null,
+--     user_type int not null,
+-- )
+
 select * from users
 -- select * from fav_games
 -- select * from games

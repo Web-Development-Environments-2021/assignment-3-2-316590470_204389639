@@ -52,3 +52,4 @@ exports.markGameAsFavorite = markGameAsFavorite;
 exports.getFavoriteGames = getFavoriteGames;
 exports.markTeamAsFavorite = markTeamAsFavorite;
 exports.markTeamAsFavorite = getFavoriteTeams;
+exports.getFavoriteTeams = getFavoriteTeams;

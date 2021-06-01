@@ -12,3 +12,7 @@
 --     user_id int not null,
 --     game_id int not null,
 -- );
+
+-- select * from fav_teams;
+-- select * from fav_players;
+-- delete from fav_teams where user_id=3;
