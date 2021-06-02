@@ -21,9 +21,13 @@ router.post("/addGame", async (req, res, next) => {
     }
     const { date, time, home_team, away_team, field } = req.body;
 
+    // if date is smaller or equal to today's AND time is smaller than now - throw 400
+    if(date <= league_utils.convertDate(new Date()) && time < league_utils.convertTime(new Date())){
+      throw { status: 400, message: "Bad input"}
+    }
     if( !date || !time || !home_team || !away_team || !field)
       throw { status: 400, message: "Bad input"}
-
+    
     const user = (
       await DButils.execQuery(
         `SELECT * FROM users WHERE user_id = '${req.session.user_id}'`

@@ -1,5 +1,6 @@
 const DButils = require("./DButils");
 const games_utils = require("./games_utils");
+const league_utils = require("./league_utils");
 
 async function markPlayerAsFavorite(user_id, player_id) {
   await DButils.execQuery(
@@ -21,8 +22,15 @@ async function markGameAsFavorite(user_id, game_id){
 }
 
 async function getFavoriteGames(user_id) {
+  // getting all favorite games ids and deleting all occured favorite games.
   const game_ids = await DButils.execQuery(
-    `select game_id from fav_games where user_id='${user_id}'`
+    `
+    delete from fav_games where game_id in (
+      select game_id from games
+      where (date <= '${league_utils.convertDate(new Date())}' AND home_goal is not NULL AND away_goal is not NULL)
+    ); 
+    
+    select game_id from fav_games where user_id='${user_id}'`
   );
   // no games were found, return null
   if(game_ids.length==0){ return null;}
