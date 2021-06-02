@@ -22,6 +22,9 @@
 -- insert into games(game_id, date, time, home_team, away_team, field, home_goal, away_goal, event)
 -- values (6, '2021-05-30', '09:00:00', 103, 83, 'Camp Nou', 3, 1, 'bla');
 
+-- insert into games(game_id, date, time, home_team, away_team, field, home_goal, away_goal, event)
+-- values (7, '2021-06-30', '10:00:00', 103, 83, 'Camp Nou', NULL, NULL, NULL);
+
 select * from games
 -- update games
 -- SET

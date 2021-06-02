@@ -31,7 +31,15 @@ async function getLeagueDetails() {
        ORDER BY date ASC, time ASC`
     )
   )[0];
-  
+  // if no next games found
+  if( !next_game ){
+    return{
+      league_name: league.data.data.name,
+      current_season_name: league.data.data.season.data.name,
+      current_stage_name: stage.data.data.name,
+      next_game_details: "no future games were found",
+    }
+  }
   const next_game_details = (await games_utils.getGamesInfo([next_game.game_id]))[0];
 
   const temp = {

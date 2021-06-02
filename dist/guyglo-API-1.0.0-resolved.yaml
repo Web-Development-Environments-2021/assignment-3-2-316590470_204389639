@@ -430,6 +430,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/teamSearch'
         
+  /games/addEvent:
+    post:
+      tags:
+      - games
+      description: add event to not-finished game.
+      required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                game_id:
+                  type: int
+                  example: 83
+                minute:
+                  type: int
+                  example: 43
+                description:
+                  type: string
+                  exmaple: 'foul'
+      responses:
+        "201":
+          description: Successfully added game's event.
+        "401":
+          description: Unauthorized, you have no permissions.
+        "409":
+          description: Denied, game has finished.
+      security:
+      - cookieAuth: []
+
 components:
   schemas:
     securitySchemes:
@@ -513,6 +544,7 @@ components:
         next_game:
           type: string
       description: information about some leagues - name, current season, current stage, next game detail
+    
     game:
       type: object
       properties:
@@ -542,6 +574,7 @@ components:
           items:
             $ref: '#/components/schemas/event'
       description: info about games, occured or not.
+
     gamePreview:
       type: object
       properties:
@@ -561,15 +594,43 @@ components:
           type: string
           example: Camp Nou
       description: game not occured yet details
+
     event:
       type: object
       properties:
+        date:
+          type: string
+          example: 2021-06-30
+        hour:
+          type: string
+          example: 15:30:00
         minute:
-          type: string
-          example: 45'
+          type: int
+          example: 45
         description:
-          type: string
-          example: foul
+          $ref: '#/components/schemas/event_description'
+          example: red card messi
+
+    event_type:
+      type: string
+      enum:
+        - goal
+        - offside
+        - offense
+        - red card
+        - yellow card
+        - injury
+        - substitution
+
+    event_description:
+      type: object
+      properties:
+        event_type:
+          $ref: '#/components/schemas/event_type'
+        player_id:
+          type: int
+          exmaple: 20
+
     teamSearch:
       type: object
       properties:
@@ -577,7 +638,7 @@ components:
           type: array
           itmes:
             $ref: '#/components/schemas/teamPreview'
-    
+
     registerBody:
       type: object
       properties:
@@ -677,8 +738,9 @@ components:
         symbol:
           type: string
           example: https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/1200px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png
-        favorite:
-          type: boolean
+        twitter:
+          type: string
+          example: "@FCBayernEN"
       description: preview and full info of a team object
     teamFull:
       type: object

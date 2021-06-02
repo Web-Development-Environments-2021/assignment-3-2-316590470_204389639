@@ -16,6 +16,7 @@ async function getGamesInfo(game_ids_list){
     AND date >= '${current_date}'
     ORDER BY date ASC, time ASC`
   )
+  
   let games_with_names = games_with_ids.map( async (game)=>{
     const home_team_name = await teams_utils.getTeamNameById(game.home_team);
     const away_team_name = await teams_utils.getTeamNameById(game.away_team);
@@ -128,7 +129,27 @@ async function gameHasFinishedAlready(game_id){
   return 0;
 }
 
+async function addEventToGame(game_id, minute, description){
+  let next_event_id = (await DButils.execQuery(
+    'select * from events'
+  ));
+
+  next_event_id = next_event_id.length+1;
+  // inserting new event, and updating date and hour according to games table.
+  DButils.execQuery(
+    `insert into events (EID, GID, minute, date, time, player, event_type)
+    values (${next_event_id}, ${game_id}, ${minute}, NULL, NULL, ${description.player_id}, '${description.event_type}');
+    
+    update events
+    set
+      events.date = (select date from games where game_id = ${game_id}),
+      events.time = (select time from games where game_id = ${game_id})
+    where
+      EID = ${next_event_id};`
+  );
+}
 
 exports.getGamesInfo = getGamesInfo;
 exports.addResultToGame = addResultToGame;
 exports.gameHasFinishedAlready = gameHasFinishedAlready;
+exports.addEventToGame = addEventToGame;

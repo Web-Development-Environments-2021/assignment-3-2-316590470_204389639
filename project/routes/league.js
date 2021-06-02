@@ -16,6 +16,9 @@ router.post("/addGame", async (req, res, next) => {
   try {
     // parameters exists
     // valid parameters
+    if(!(req.session && req.session.user_id)){
+      throw { status: 401, message: "Unauthorized" };
+    }
     const { date, time, home_team, away_team, field } = req.body;
 
     if( !date || !time || !home_team || !away_team || !field)
@@ -38,9 +41,9 @@ router.post("/addGame", async (req, res, next) => {
     
     // add the new game
     await DButils.execQuery(
-      `INSERT INTO games (game_id, date, time, home_team, away_team, field, home_goal, away_goal, event)
+      `INSERT INTO games (game_id, date, time, home_team, away_team, field, home_goal, away_goal)
        VALUES (${games_id}, '${date}', '${time}', '${home_team}', '${away_team}'
-       , '${field}', NULL, NULL, NULL)`
+       , '${field}', NULL, NULL)`
     );
     res.status(201).send("game added");
   } catch (error) {

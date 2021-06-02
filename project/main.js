@@ -85,12 +85,15 @@ app.get("/alive", (req, res) => res.send("I'm aliveeeeee"));
 // getting home page
 app.get('/', async (req, res, next) => {
   try{
+    // get league details
     const league_details = await league_utils.getLeagueDetails();
     let fav_games_details = null;
+
     if (req.session && req.session.user_id){
       const user_id = req.session.user_id;
       fav_games_details = await user_utils.getFavoriteGames(user_id);
       let top_3_games = "no favorite games were found";
+      
       // if no games were found
       if(fav_games_details != null){
         const num_fav_games = Object.keys(fav_games_details).length;
