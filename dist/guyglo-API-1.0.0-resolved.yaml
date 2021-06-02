@@ -407,7 +407,29 @@ paths:
           description: Already has a result.
       security:
       - cookieAuth: []
-
+  /search/teams/{team_name}:
+    get:
+      tags:
+      - search
+      description: search for a specific team by partial or full name
+      paramaters:
+      - name: team_name
+        in: path
+        description: name of team
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: bayren munich
+      responses:
+      "200":
+        description: sucsessfuly retrived all teams for search
+        content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/teamSearch'
+        
 components:
   schemas:
     securitySchemes:
@@ -548,6 +570,14 @@ components:
         description:
           type: string
           example: foul
+    teamSearch:
+      type: object
+      properties:
+        teams:
+          type: array
+          itmes:
+            $ref: '#/components/schemas/teamPreview'
+    
     registerBody:
       type: object
       properties:

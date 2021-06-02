@@ -91,8 +91,11 @@ async function getGameEvents(GID){
   let promise =await Promise.all(eventList)
   return eventList.map((event)=>{
     return{
+      date: event.date,
+      time:event.time,
       minute: event.minute,
-      description: event.description,
+      eventType: event.event_type,
+      player: event.player
     };
     
   });

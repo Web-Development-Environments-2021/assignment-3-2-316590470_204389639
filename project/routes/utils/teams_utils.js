@@ -8,6 +8,8 @@ async function getTeamsInfo(team_ids_list){
     
 }
 
+
+
 async function getTeamNameById(team_id){
     const team = await axios.get(
         `https://soccer.sportmonks.com/api/v2.0/teams/${team_id}`,
@@ -51,6 +53,7 @@ async function getPastAndFutureGames(team_id){
       game_id = game.game_id
       game_events = await games.getGameEvents(game_id)
       game.events = game_events;
+      
      
       //remove the game_id field since it is not compatible with our API
       delete game.game_id;
