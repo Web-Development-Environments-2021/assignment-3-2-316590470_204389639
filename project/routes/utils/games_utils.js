@@ -84,7 +84,6 @@ function extractRelevantGameData(games_info) {
       };
     });
   }
-<<<<<<< HEAD
 async function getGameEvents(GID){
   const eventList = await DButils.execQuery(
     `select * from events where GID = ${GID}`
@@ -101,7 +100,6 @@ async function getGameEvents(GID){
 }
 exports.getGameEvents = getGameEvents;
 exports.getGamesInfo = getGamesInfo;
-=======
 
 
 async function addResultToGame(game_id, home_result, away_result){
@@ -131,4 +129,3 @@ async function gameHasFinishedAlready(game_id){
 exports.getGamesInfo = getGamesInfo;
 exports.addResultToGame = addResultToGame;
 exports.gameHasFinishedAlready = gameHasFinishedAlready;
->>>>>>> main
