@@ -363,6 +363,7 @@ paths:
           description: Unauthorized, you have no permissions.
     security:
       - cookieAuth: []
+
   /league/current_games:
     get:
       tags:
@@ -407,6 +408,52 @@ paths:
           description: Already has a result.
       security:
       - cookieAuth: []
+  /search/teams:
+    get:
+      tags:
+      - search
+      description: search for a specific team by partial or full name
+      paramaters:
+      - name: team_name
+        in: path
+        description: name of team
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: bayren munich
+      responses:
+      "200":
+        description: sucsessfuly retrived all teams for search
+        content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/teamSearch'
+        
+  /search/players:
+      get:
+        tags:
+        - search
+        description: search for a specific player by partial or full name
+        paramaters:
+        - name: player_name
+          in: path
+          description: name of player
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: lionel messi
+        responses:
+        "200":
+          description: sucsessfuly retrived all players for search
+          content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/teamSearch'
+
   /games/addEvent:
     post:
       tags:
@@ -521,6 +568,7 @@ components:
         next_game:
           type: string
       description: information about some leagues - name, current season, current stage, next game detail
+    
     game:
       type: object
       properties:
@@ -550,6 +598,7 @@ components:
           items:
             $ref: '#/components/schemas/event'
       description: info about games, occured or not.
+
     gamePreview:
       type: object
       properties:
@@ -569,6 +618,7 @@ components:
           type: string
           example: Camp Nou
       description: game not occured yet details
+
     event:
       type: object
       properties:
@@ -584,6 +634,7 @@ components:
         description:
           $ref: '#/components/schemas/event_description'
           example: red card messi
+
     event_type:
       type: string
       enum:
@@ -594,6 +645,7 @@ components:
         - yellow card
         - injury
         - substitution
+
     event_description:
       type: object
       properties:
@@ -602,6 +654,15 @@ components:
         player_id:
           type: int
           exmaple: 20
+
+    teamSearch:
+      type: object
+      properties:
+        teams:
+          type: array
+          itmes:
+            $ref: '#/components/schemas/teamPreview'
+
     registerBody:
       type: object
       properties:
@@ -726,10 +787,15 @@ components:
     current_games:
       type: object
       properties:
-        games:
+        future_games:
           type: array
           items:
             $ref: '#/components/schemas/game'
+        past_games:
+          type: array
+          items:
+            $ref: '#/components/schemas/gamePreview'
+
     fav_players:
       type: object
       properties:
