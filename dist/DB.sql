@@ -1,5 +1,17 @@
 
-SELECT name FROM  players where name like '%i%'
+-- update events
+-- SET time = (SELECT time from games where game_id = GID);
+
+-- ALTER TABLE events
+-- DROP COLUMN description ;
+-- ALTER TABLE events
+-- ADD  time TIME;
+-- ALTER TABLE events
+-- ADD  event_type int;
+
+select * from events
+-- select * from games
+
 -- create table players(
 --     name varchar(30) not null UNIQUE,
 --     id int 

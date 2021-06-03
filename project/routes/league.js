@@ -68,4 +68,10 @@ router.post("/addGame", async (req, res, next) => {
   }
 });
 
+router.get('/current_games', async(req, res, next) => {
+  
+  const all_games = await league_utils.getPastAndFutureGames();
+  res.status(200).send(all_games);
+});
+
 module.exports = router;
