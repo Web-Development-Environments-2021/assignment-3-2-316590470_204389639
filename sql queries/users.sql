@@ -31,8 +31,16 @@
 --     username varchar(255) not null, 
 --     password VARCHAR(255) not null,
 --     user_type int not null,
+--     email varchar(255) not null,
 -- )
 
-select * from users
+-- select * from users
+-- update users
+-- set 
+--     email = 'israel@gmail.com'
+-- WHERE
+--     username = 'Israel'
+-- alter table users
+-- add email varchar(255);
 -- select * from fav_games
 -- select * from games

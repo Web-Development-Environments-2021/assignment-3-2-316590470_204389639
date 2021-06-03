@@ -19,8 +19,8 @@ router.get('/manage', async (req, res, next) => {
     if (user.user_type == 0){
       throw { status: 401, message: "Unauthorized" };
     }
-    const all_legaue_games; // withdraw with getPastAndFutureGames from Guy.
-    
+    const all_legaue_games = await league_utils.getPastAndFutureGames(); // withdraw with getPastAndFutureGames from Guy.
+    res.status(200).send(all_legaue_games);
   } catch(error){
     next(error);
   }
