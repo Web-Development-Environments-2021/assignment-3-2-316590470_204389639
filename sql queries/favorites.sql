@@ -23,4 +23,5 @@
 --     select game_id from fav_games
 -- )
 -- select * from fav_games
+-- select * from fav_players
 -- delete from fav_teams where user_id=3;
