@@ -103,6 +103,7 @@ async function getPastAndFutureGames(team_id){
    future_games:future_games
    }
    return all_games;
+}
 function extractPreview(teams_list){
     return teams_list.map( (team) => {
         return {
@@ -114,6 +115,17 @@ function extractPreview(teams_list){
     })
 }
 
+function extractPreviewForSearch(teams_list){
+   return teams_list.map( (team) => {
+       return {
+           team_id: team.id,
+           team_name: team.name,
+           team_symbol: team.logo_path,
+           team_twitter: team.twitter,
+       }
+   })
+}
 exports.getTeamsInfo = getTeamsInfo;
+exports.extractPreviewForSearch = extractPreviewForSearch;
 exports.getTeamNameById = getTeamNameById;
 exports.getPastAndFutureGames = getPastAndFutureGames;

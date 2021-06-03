@@ -363,6 +363,7 @@ paths:
           description: Unauthorized, you have no permissions.
     security:
       - cookieAuth: []
+
   /league/current_games:
     get:
       tags:
@@ -407,7 +408,7 @@ paths:
           description: Already has a result.
       security:
       - cookieAuth: []
-  /search/teams/{team_name}:
+  /search/teams:
     get:
       tags:
       - search
@@ -430,6 +431,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/teamSearch'
         
+  /search/players:
+      get:
+        tags:
+        - search
+        description: search for a specific player by partial or full name
+        paramaters:
+        - name: player_name
+          in: path
+          description: name of player
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            example: lionel messi
+        responses:
+        "200":
+          description: sucsessfuly retrived all players for search
+          content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/teamSearch'
+
   /games/addEvent:
     post:
       tags:
@@ -763,10 +787,15 @@ components:
     current_games:
       type: object
       properties:
-        games:
+        future_games:
           type: array
           items:
             $ref: '#/components/schemas/game'
+        past_games:
+          type: array
+          items:
+            $ref: '#/components/schemas/gamePreview'
+
     fav_players:
       type: object
       properties:
