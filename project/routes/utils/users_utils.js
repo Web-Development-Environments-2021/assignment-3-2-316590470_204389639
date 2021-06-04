@@ -4,7 +4,11 @@ const league_utils = require("./league_utils");
 
 async function markPlayerAsFavorite(user_id, player_id) {
   await DButils.execQuery(
-    `insert into fav_players values ('${user_id}', ${player_id})`
+    `insert into fav_players (user_id, player_id)
+    select '${user_id}', ${player_id}
+    where not exists 
+    (select * from fav_players
+    where (user_id = '${user_id}' and player_id = ${player_id}));`
   );
 }
 
@@ -17,7 +21,11 @@ async function getFavoritePlayers(user_id) {
 
 async function markGameAsFavorite(user_id, game_id){
   await DButils.execQuery(
-    `insert into fav_games values ('${user_id}', ${game_id})`
+    `insert into fav_games (user_id, game_id)
+    select '${user_id}', ${game_id}
+    where not exists 
+    (select * from fav_games
+    where (user_id = '${user_id}' and game_id = ${game_id}));`
   );
 }
 
@@ -43,7 +51,11 @@ async function getFavoriteGames(user_id) {
 
 async function markTeamAsFavorite(user_id, team_id){
   await DButils.execQuery(
-    `insert into fav_teams values ('${user_id}', ${team_id})`
+    `insert into fav_teams (user_id, team_id)
+    select '${user_id}', ${team_id}
+    where not exists 
+    (select * from fav_teams
+    where (user_id = '${user_id}' and team_id = ${team_id}));`
   );
 }
 
@@ -59,5 +71,4 @@ exports.getFavoritePlayers = getFavoritePlayers;
 exports.markGameAsFavorite = markGameAsFavorite;
 exports.getFavoriteGames = getFavoriteGames;
 exports.markTeamAsFavorite = markTeamAsFavorite;
-exports.markTeamAsFavorite = getFavoriteTeams;
 exports.getFavoriteTeams = getFavoriteTeams;

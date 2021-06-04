@@ -57,7 +57,7 @@ paths:
                 $ref: '#/components/schemas/about'
         "404":
           description: Bad Request. Could not find the requested URL.
-  /register:
+  /Register:
     post:
       tags:
       - authentication
@@ -74,7 +74,7 @@ paths:
         "400":
           description: Could not register since some fields are empty. You must fill all fields.
         "409":
-          description: Username already exist
+          description: Username or Email already exist
   /login:
     post:
       tags:
@@ -378,6 +378,24 @@ paths:
                 $ref: '#/components/schemas/current_games'
         "404":
           description: Bad Request. Could not find the requested URL.
+  
+  /league/manage:
+    get:
+      tags:
+      - league
+      description: displays all existed league's games in games' database.
+      responses:
+        "200":
+          description: Successfully pulled league games.
+          content:
+            application/json:
+              shcema:
+                $ref: '#/components/schemas/current_games'
+        "401":
+          description: Unauthorized.
+      security:
+      - cookieAuth: []
+
   /games/addResult:
     post:
       tags:

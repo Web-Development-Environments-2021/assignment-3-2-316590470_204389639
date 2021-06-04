@@ -9,12 +9,15 @@ router.post("/Register", async (req, res, next) => {
     // valid parameters
     // username exists
     const users = await DButils.execQuery(
-      "SELECT username FROM users"
+      "SELECT username, email FROM users"
     );
 
     if (users.find((x) => x.username === req.body.username))
       throw { status: 409, message: "Username taken" };
-
+    
+    if (users.find((x) => x.email === req.body.email)){
+      throw { status: 409, message: "email is used already" };
+    }
     //hash the password
     let hash_password = bcrypt.hashSync(
       req.body.password,
@@ -27,8 +30,8 @@ router.post("/Register", async (req, res, next) => {
     users_id = users_id.length+1;
     // add the new username
     await DButils.execQuery(
-      `INSERT INTO users (user_id, username, password, user_type)
-       VALUES (${users_id}, '${req.body.username}', '${hash_password}', 0)`
+      `INSERT INTO users (user_id, username, password, user_type, email, picture_url)
+       VALUES (${users_id}, '${req.body.username}', '${hash_password}', 0, '${req.body.email}', '${req.body.picture}')`
     );
 
     res.status(201).send("user created");
