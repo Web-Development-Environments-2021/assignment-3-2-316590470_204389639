@@ -29,27 +29,29 @@ router.get('/players', async(req, res,next) => {
          //   include: squad.player,    
            api_token: process.env.api_token,
          },
-      });
-      console.log("heloo");
+      });     
       let list_toRet =[];
       let player_list = all_teams_full_details.data.data.map(async(team)=>{
+         // console.log("heloo");
+         let teamName = team.name;
          let player_info = (team.squad.data.map(async(player)=>{
             list_toRet.push( {
                fullname:player.player.data.fullname,
                picture: player.player.data.image_path,
                position: player.player.data.position_id,
+               team: teamName
             })
          }))
          let names = await Promise.all(player_info)
          return names;
       });
       let list = await Promise.all(player_list);
-      console.log("heloo");
+      // console.log("heloo");
       res.status(200).send(list_toRet);
    }
    catch(error){
       next(error);
    }
-console.log("heloo");});
+});
 
 module.exports = router;
