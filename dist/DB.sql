@@ -9,7 +9,15 @@
 -- ALTER TABLE events
 -- ADD  event_type int;
 
-select * from events
+-- select * from events
+
+-- update games
+-- set  
+-- home_goal = NULL,
+-- away_goal = NULL 
+-- where game_id = 3 or game_id = 4
+-- select * from games 
+
 -- select * from games
 
 -- create table players(
