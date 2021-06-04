@@ -3,6 +3,7 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const DButils = require("./DButils");
 const league =  require("./league_utils");
 const games = require("./games_utils");
+const season_Id = 17328 ;
 
 async function getTeamsInfo(team_ids_list){
     let teams_promises = [];
@@ -125,7 +126,20 @@ function extractPreviewForSearch(teams_list){
        }
    })
 }
+
+async function getAllLeagueTeams(){
+   
+   let all_teams_full_details = await axios.get(`https://soccer.sportmonks.com/api/v2.0/teams/season/${season_Id}`,{
+      params: {
+         api_token: process.env.api_token,
+      },
+      });
+   var team_previews = extractPreviewForSearch(all_teams_full_details.data.data);
+   return team_previews;
+
+}
 exports.getTeamsInfo = getTeamsInfo;
 exports.extractPreviewForSearch = extractPreviewForSearch;
 exports.getTeamNameById = getTeamNameById;
 exports.getPastAndFutureGames = getPastAndFutureGames;
+exports.getAllLeagueTeams = getAllLeagueTeams;

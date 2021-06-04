@@ -117,6 +117,35 @@ async function searchPlayerInDB(name){
   ));
   return player_names;
 }
+
+async function getAllLeaguePlayers(season_id){
+
+  let all_teams_full_details = await axios.get(`https://soccer.sportmonks.com/api/v2.0/teams/season/${season_id}?include=squad.player`,{
+      params: {   
+        api_token: process.env.api_token,
+      },
+  });     
+  let list_toRet =[];
+  let player_list = all_teams_full_details.data.data.map(async(team)=>{
+      // console.log("heloo");
+      let teamName = team.name;
+      let player_info = (team.squad.data.map(async(player)=>{
+        list_toRet.push( {
+            fullname:player.player.data.fullname,
+            picture: player.player.data.image_path,
+            position: player.player.data.position_id,
+            team: teamName
+        })
+      }))
+      let names = await Promise.all(player_info)
+      return names;
+  });
+  let list = await Promise.all(player_list);
+  // console.log("heloo");
+  return list_toRet;
+}
+
+exports.getAllLeaguePlayers = getAllLeaguePlayers;
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
 exports.getPlayersInfoByName = getPlayersInfoByName;
