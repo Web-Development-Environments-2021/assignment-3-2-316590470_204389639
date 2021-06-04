@@ -439,12 +439,12 @@ paths:
           type: string
           example: bayren munich
       responses:
-      "200":
-        description: sucsessfuly retrived all teams for search
-        content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/teamSearch'
+        "200":
+          description: sucsessfuly retrived all teams for search
+          content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/teamSearch'
         
   /search/players/:
       get:
@@ -480,12 +480,12 @@ paths:
             type: string
             example: team name
         responses:
-        "200":
-          description: sucsessfuly retrived all players for search
-          content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/playerSearch'
+          "200":
+            description: sucsessfuly retrived all players for search
+            content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/playerSearch'
 
   /games/addEvent:
     post:
@@ -693,7 +693,7 @@ components:
       properties:
         teams:
           type: array
-          itmes:
+          items:
             $ref: '#/components/schemas/teamSearch'
         players:
           type: array
@@ -705,15 +705,23 @@ components:
       properties:
         teams:
           type: array
-          itmes:
-            $ref: '#/components/schemas/teamPreview'
+          items:
+            type: object
+            properties:
+              team_name:
+                type: string
+                exapmle: Horsens
+              team_symbol:
+                type: string
+                example : https://picture.com
 
-    teamSearch:
+
+    playerSearch:
       type: object
       properties:
         teams:
           type: array
-          itmes:
+          items:
             $ref: '#/components/schemas/playerPreview'
 
     registerBody:
@@ -821,9 +829,7 @@ components:
       description: preview and full info of a team object
     teamFull:
       type: object
-      properties:
-        coach:
-          $ref: '#/components/schemas/coachPreview'
+      properties:       
         players:
           type: array
           items:
@@ -837,6 +843,7 @@ components:
           items:
             $ref: '#/components/schemas/game'
       description: preview and full info of a team object
+
     current_games:
       type: object
       properties:

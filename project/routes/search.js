@@ -16,6 +16,9 @@ router.get('/teams', async(req, res,next) => {
       if(team_name){
          team_previews = team_previews.filter(team => team.team_name.toLowerCase().includes(team_name.toLowerCase()));
       }
+      if (team_previews.length === 0 ){
+         res.status(204).send("no results")
+      }
       res.status(200).send(team_previews);
    }
    catch(error){
@@ -50,6 +53,9 @@ router.get('/players', async(req, res,next) => {
             return player;
          });
          playerList = playerList.filter(player => player != null);
+         if(playerList.length === 0){
+            res.status(204).send("No results");
+         }
       }
       res.status(200).send(playerList);
 

@@ -118,11 +118,9 @@ function extractPreview(teams_list){
 
 function extractPreviewForSearch(teams_list){
    return teams_list.map( (team) => {
-       return {
-           team_id: team.id,
+       return {          
            team_name: team.name,
-           team_symbol: team.logo_path,
-           team_twitter: team.twitter,
+           team_symbol: team.logo_path,          
        }
    })
 }
