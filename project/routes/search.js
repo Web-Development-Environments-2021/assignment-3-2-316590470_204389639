@@ -9,12 +9,13 @@ const season_id = 17328;
 
 router.get('/teams', async(req, res,next) => {
    try{
-      let all_teams_full_details = await axios.get(`https://soccer.sportmonks.com/api/v2.0/teams/season/${season_id}`,{
-         params: {
-           api_token: process.env.api_token,
-         },
-       });
-      var team_previews = teams_utils.extractPreviewForSearch(all_teams_full_details.data.data);
+      let team_name = req.query.team_name;
+      
+
+      let team_previews = await teams_utils.getAllLeagueTeams();
+      if(team_name){
+         team_previews = team_previews.filter(team => team.team_name.toLowerCase().includes(team_name.toLowerCase()));
+      }
       res.status(200).send(team_previews);
    }
    catch(error){
@@ -24,32 +25,55 @@ router.get('/teams', async(req, res,next) => {
 
 router.get('/players', async(req, res,next) => {
    try{
-      let all_teams_full_details = await axios.get(`https://soccer.sportmonks.com/api/v2.0/teams/season/${season_id}?include=squad.player`,{
-         params: {
-         //   include: squad.player,    
-           api_token: process.env.api_token,
-         },
-      });
-      console.log("heloo");
-      let list_toRet =[];
-      let player_list = all_teams_full_details.data.data.map(async(team)=>{
-         let player_info = (team.squad.data.map(async(player)=>{
-            list_toRet.push( {
-               fullname:player.player.data.fullname,
-               picture: player.player.data.image_path,
-               position: player.player.data.position_id,
-            })
-         }))
-         let names = await Promise.all(player_info)
-         return names;
-      });
-      let list = await Promise.all(player_list);
-      console.log("heloo");
-      res.status(200).send(list_toRet);
+      let player_name = req.query.player_name;
+      let player_team = req.query.team_name;
+      let player_position = req.query.position;      
+      let playerList = await players_utils.getAllLeaguePlayers(season_id);
+      
+      if(player_position || player_name || player_team){
+         playerList = playerList.map((player)=>{
+            if(player_position){
+               if(player_position != player.position){
+                  return null;
+               }
+            }
+            if(player_name){
+               if(!player.fullname.toLowerCase().includes(player_name.toLowerCase())){
+                  return null;
+               }
+            }
+            if(player_team){
+               if(!player.team.toLowerCase().includes(player_team.toLowerCase())){
+                  return null;
+               }
+            }
+            return player;
+         });
+         playerList = playerList.filter(player => player != null);
+      }
+      res.status(200).send(playerList);
+
+
    }
    catch(error){
       next(error);
    }
-console.log("heloo");});
+});
+
+router.get('/', async(req, res, next) => {
+   try{
+      let teams = await teams_utils.getAllLeagueTeams();
+      let players = await players_utils.getAllLeaguePlayers(season_id);
+
+      info = {
+         teams: teams,
+         players: players,
+      }
+      res.status(200).send(info);
+   }
+   catch(error){
+      next(error);
+   }
+});
 
 module.exports = router;
