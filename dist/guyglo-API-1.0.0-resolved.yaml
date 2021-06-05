@@ -57,7 +57,7 @@ paths:
                 $ref: '#/components/schemas/about'
         "404":
           description: Bad Request. Could not find the requested URL.
-  /Register:
+  /register:
     post:
       tags:
       - authentication
@@ -74,7 +74,7 @@ paths:
         "400":
           description: Could not register since some fields are empty. You must fill all fields.
         "409":
-          description: Username or Email already exist
+          description: Username already exist
   /login:
     post:
       tags:
@@ -378,8 +378,7 @@ paths:
                 $ref: '#/components/schemas/current_games'
         "404":
           description: Bad Request. Could not find the requested URL.
-  
-  /league/manage:
+/league/manage:
     get:
       tags:
       - league
@@ -409,13 +408,13 @@ paths:
               type: object
               properties:
                 game_id:
-                  type: int
+                  type: integer
                   example: 83
                 home_team_result:
-                  type: int
+                  type: integer
                   example: 1
                 away_team_result:
-                  type: int
+                  type: integer
                   example: 2
       responses:
         "201":
@@ -457,12 +456,12 @@ paths:
           type: string
           example: bayren munich
       responses:
-      "200":
-        description: sucsessfuly retrived all teams for search
-        content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/teamSearch'
+        "200":
+          description: sucsessfuly retrived all teams for search
+          content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/teamSearch'
         
   /search/players/:
       get:
@@ -486,7 +485,7 @@ paths:
           style: simple
           explode: false
           schema:
-            type: int
+            type: integer
             example: 1
         - name: team_name
           in: query
@@ -498,18 +497,18 @@ paths:
             type: string
             example: team name
         responses:
-        "200":
-          description: sucsessfuly retrived all players for search
-          content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/playerSearch'
+          "200":
+            description: sucsessfuly retrived all players for search
+            content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/playerSearch'
 
   /games/addEvent:
     post:
       tags:
       - games
-      description: add event to not-finished game.
+      description: add events to not-finished game.
       required: true
       requestBody:
         content:
@@ -518,14 +517,13 @@ paths:
               type: object
               properties:
                 game_id:
-                  type: int
-                  example: 83
+                  type: integer
+                  example: 85
                 minute:
-                  type: int
+                  type: integer
                   example: 43
                 description:
-                  type: string
-                  exmaple: 'foul'
+                  $ref: '#/components/schemas/event_description' 
       responses:
         "201":
           description: Successfully added game's event.
@@ -680,7 +678,7 @@ components:
           type: string
           example: 15:30:00
         minute:
-          type: int
+          type: integer
           example: 45
         description:
           $ref: '#/components/schemas/event_description'
@@ -703,15 +701,15 @@ components:
         event_type:
           $ref: '#/components/schemas/event_type'
         player_id:
-          type: int
-          exmaple: 20
+          type: integer
+          example: 20
     
     generalSearch:
       type: object
       properties:
         teams:
           type: array
-          itmes:
+          items:
             $ref: '#/components/schemas/teamSearch'
         players:
           type: array
@@ -723,8 +721,24 @@ components:
       properties:
         teams:
           type: array
-          itmes:
-            $ref: '#/components/schemas/teamPreview'
+          items:
+            type: object
+            properties:
+              team_name:
+                type: string
+                exapmle: Horsens
+              team_symbol:
+                type: string
+                example : https://picture.com
+
+
+    playerSearch:
+      type: object
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/playerPreview'
 
     teamSearch:
       type: object
@@ -839,9 +853,7 @@ components:
       description: preview and full info of a team object
     teamFull:
       type: object
-      properties:
-        coach:
-          $ref: '#/components/schemas/coachPreview'
+      properties:       
         players:
           type: array
           items:
@@ -855,6 +867,7 @@ components:
           items:
             $ref: '#/components/schemas/game'
       description: preview and full info of a team object
+
     current_games:
       type: object
       properties:
