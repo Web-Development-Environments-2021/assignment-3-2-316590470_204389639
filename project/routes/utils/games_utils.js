@@ -120,10 +120,10 @@ async function addResultToGame(game_id, home_result, away_result){
 
 async function gameHasFinishedAlready(game_id){
   const game = (await DButils.execQuery(
-    `select home_goal, away_goal from games
+    `select home_goal, away_goal, date from games
      where game_id = ${game_id};`)
   )[0];
-  if(game.home_goal != null && game.away_goal != null){
+  if(game.home_goal != null || game.away_goal != null || game.date != league_utils.convertDate(new Date())){
     return 1;
   }
   return 0;
