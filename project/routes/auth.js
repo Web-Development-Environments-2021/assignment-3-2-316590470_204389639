@@ -5,6 +5,9 @@ const bcrypt = require("bcryptjs");
 
 router.post("/Register", async (req, res, next) => {
   try {
+    if( Object.keys(req.query).length > 0 ){
+      throw { status: 404, message: "Could not find the requested url"};
+    }
     // parameters exists
     // valid parameters
     const { username, first_name, last_name, country,
@@ -49,9 +52,13 @@ router.post("/Register", async (req, res, next) => {
 
 router.post("/login", async (req, res, next) => {
   try {
+    if( Object.keys(req.query).length > 0  ){
+      throw { status: 404, message: "Could not find the requested url"};
+    }
+    const username = req.body.username;
     const user = (
       await DButils.execQuery(
-        `SELECT * FROM users WHERE username = '${req.body.username}'`
+        `SELECT * FROM users WHERE username = '${username}'`
       )
     )[0];
     // user = user[0];
@@ -75,6 +82,9 @@ router.post("/login", async (req, res, next) => {
 
 // not working
 router.post("/logout", function (req, res) {
+  if( Object.keys(req.query).length > 0  ){
+    throw { status: 404, message: "Could not find the requested url"};
+  }
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
   res.status(205).send({ success: true, message: "logout succeeded" });
 });

@@ -37,12 +37,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/homePage'
-        "400":
-          description: The server could not understand the request due to invalid syntax
         "404":
           description: Bad Request. Could not find the requested URL.
-        "409":
-          description: Can't complete the request.
 
   /Register:
     post:
@@ -112,8 +108,8 @@ paths:
       summary: player's ticket info
       description: shows player's ticket info.
       parameters:
-      - name: playerId
-        in: path
+      - in: path
+        name: playerId
         description: Identifier of player
         required: true
         style: simple
@@ -138,8 +134,8 @@ paths:
       summary: team's ticket info
       description: shows team's ticket info.
       parameters:
-      - name: teamId
-        in: path
+      - in: path
+        name: teamId
         description: Identifier of team
         required: true
         style: simple
@@ -172,6 +168,8 @@ paths:
       responses:
         "201":
           description: Successfully added player to favorites.
+        "400":
+          description: Invalid syntax.
 
     get:
       tags:
@@ -207,6 +205,8 @@ paths:
       responses:
         "201":
           description: Successfully added team to favorites.
+        "400":
+          description: Invalid syntax.
 
     get:
       tags:
@@ -242,6 +242,8 @@ paths:
       responses:
         "201":
           description: Successfully added game to favorites.
+        "400":
+          description: Invalid syntax.
         
     get:
       tags:
@@ -277,7 +279,7 @@ paths:
         "201": 
           description: Successfully created game.
         "400":
-          description: Bad request, some fields are wrong.
+          description: Invalid syntax.
         "401":
           description: Unauthorized, you have no permissions.
     security:
@@ -298,22 +300,24 @@ paths:
         "404":
           description: Bad Request. Could not find the requested URL.
 
-/league/manage:
-    get:
-      tags:
-      - league
-      description: displays all existed league's games in games' database.
-      responses:
-        "200":
-          description: Successfully pulled league games.
-          content:
-            application/json:
-              shcema:
-                $ref: '#/components/schemas/current_games'
-        "401":
-          description: Unauthorized.
-      security:
-      - cookieAuth: []
+  /league/manage:
+      get:
+        tags:
+        - league
+        description: displays all existed league's games in games' database.
+        responses:
+          "200":
+            description: Successfully pulled league games.
+            content:
+              application/json:
+                shcema:
+                  $ref: '#/components/schemas/current_games'
+          "401":
+            description: Unauthorized.
+          "404":
+            description: Could not find the requested url.
+        security:
+        - cookieAuth: []
 
   /games/addResult:
     post:
@@ -339,6 +343,8 @@ paths:
       responses:
         "201":
           description: Successfully added game's results.
+        "400":
+          description: Invalid syntax.
         "401":
           description: Unauthorized, you have no permissions.
         "409":
@@ -351,7 +357,16 @@ paths:
       tags:
       - search
       description: all the league details
-      parameters: []
+      parameters:
+      - in: query
+        name: name
+        description: name of player/team
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: bayren
       responses:
         "200":
           description: sucsessful
@@ -359,14 +374,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/generalSearch'
+        "204":
+          description: No content.
+        "404":
+          description: Could not found the requested url.
+
 
   /search/teams:
     get:
       tags:
       - search
       description: search for a specific team by partial or full name
-      paramaters:
-      - name: team_name
+      parameters:
+      - name: name
         in: query
         description: name of team
         required: false
@@ -382,15 +402,19 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/teamSearch'
+        "204":
+          description: No content.
+        "404":
+          description: Could not found the requested url.
         
   /search/players:
       get:
         tags:
         - search
         description: search for a specific player by partial or full name
-        paramaters:
-        - name: player_name
-          in: query
+        parameters:
+        - in: query
+          name: name
           description: name of player
           required: false
           style: simple
@@ -398,8 +422,8 @@ paths:
           schema:
             type: string
             example: lionel messi
-        - name: player_position
-          in: query
+        - in: query
+          name: position
           description: position on player
           required: false
           style: simple
@@ -407,8 +431,8 @@ paths:
           schema:
             type: integer
             example: 1
-        - name: team_name
-          in: query
+        - in: query
+          name: team_name
           description: team name
           required: false
           style: simple
@@ -423,6 +447,10 @@ paths:
                 application/json:
                   schema:
                     $ref: '#/components/schemas/playerSearch'
+          "204":
+            description: No content.
+          "404":
+            description: Could not found the requested url.
 
   /games/addEvent:
     post:
@@ -447,10 +475,10 @@ paths:
       responses:
         "201":
           description: Successfully added game's event.
+        "400":
+          description: Invalid syntax/Bad request.
         "401":
           description: Unauthorized, you have no permissions.
-        "409":
-          description: Denied, game has finished.
       security:
       - cookieAuth: []
 
@@ -667,6 +695,7 @@ components:
           example: israel@gmail.com
         picture:
           type: string
+
     loginBody:
       type: object
       properties:

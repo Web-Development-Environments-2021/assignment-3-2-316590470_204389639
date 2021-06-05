@@ -5,35 +5,43 @@ const league =  require("./league_utils");
 const games = require("./games_utils");
 
 async function getTeamsInfo(team_ids_list){
-    let teams_promises = [];
-    team_ids_list.map((team_id)=>{
-        teams_promises.push( 
-            axios.get(
+    try{
+        let teams_promises = [];
+        team_ids_list.map((team_id)=>{
+            teams_promises.push( 
+                axios.get(
+                `https://soccer.sportmonks.com/api/v2.0/teams/${team_id}`,
+                {
+                    params: {
+                    api_token: process.env.api_token,
+                    },
+                }
+            ));  
+        });
+        let teams = await Promise.all(teams_promises);
+        return extractPreview(teams);
+    } catch(error){
+        return 1;
+    }
+}
+
+
+
+async function getTeamNameById(team_id){
+    try{
+        const team = await axios.get(
             `https://soccer.sportmonks.com/api/v2.0/teams/${team_id}`,
             {
                 params: {
                 api_token: process.env.api_token,
                 },
             }
-        ));  
-    });
-    let teams = await Promise.all(teams_promises);
-    return extractPreview(teams);
-}
-
-
-
-async function getTeamNameById(team_id){
-    const team = await axios.get(
-        `https://soccer.sportmonks.com/api/v2.0/teams/${team_id}`,
-        {
-            params: {
-            api_token: process.env.api_token,
-            },
+        );
+        return{
+            name: team.data.data.name,
         }
-    );
-    return{
-        name: team.data.data.name,
+    }catch(error){
+        return 1;
     }
 }
 
@@ -125,6 +133,8 @@ function extractPreviewForSearch(teams_list){
        }
    })
 }
+
+
 exports.getTeamsInfo = getTeamsInfo;
 exports.extractPreviewForSearch = extractPreviewForSearch;
 exports.getTeamNameById = getTeamNameById;

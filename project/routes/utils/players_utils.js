@@ -4,17 +4,21 @@ const DButils = require('./DButils');
 // const TEAM_ID = "85";
 
 async function getPlayerIdsByTeam(team_id) {
-  let player_ids_list = [];
-  const team = await axios.get(`${api_domain}/teams/${team_id}`, {
-    params: {
-      include: "squad",
-      api_token: process.env.api_token,
-    },
-  });
-  team.data.data.squad.data.map((player) =>
-    player_ids_list.push(player.player_id)
-  );
-  return player_ids_list;
+  try{
+    let player_ids_list = [];
+    const team = await axios.get(`${api_domain}/teams/${team_id}`, {
+      params: {
+        include: "squad",
+        api_token: process.env.api_token,
+      },
+    });
+    team.data.data.squad.data.map((player) =>
+      player_ids_list.push(player.player_id)
+    );
+    return player_ids_list;
+  } catch(error){
+    return 1;
+  }
 }
 
 async function getPlayersInfo(players_ids_list) {
@@ -106,6 +110,7 @@ async function getPlayerFull(player_id){
 }
 
 async function getPlayersByTeam(team_id) {
+
   let player_ids_list = await getPlayerIdsByTeam(team_id);
   let players_info = await getPlayersInfo(player_ids_list);
   return players_info;
@@ -117,8 +122,26 @@ async function searchPlayerInDB(name){
   ));
   return player_names;
 }
+
+async function playerExists(player_id){
+  try{
+    const result = await axios.get(`${api_domain}/players/${player_id}`, {
+      params: {
+        api_token: process.env.api_token,
+      },
+    });
+    if(result){
+      return 0;
+    }
+    return 1;
+  }catch(error){
+    return 1;
+  }
+}
+
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
 exports.getPlayersInfoByName = getPlayersInfoByName;
 exports.getPlayerFull = getPlayerFull;
 exports.searchPlayerInDB = searchPlayerInDB;
+exports.playerExists = playerExists;

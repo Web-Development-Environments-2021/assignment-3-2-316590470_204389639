@@ -32,47 +32,6 @@ async function getGamesInfo(game_ids_list){
   return extractRelevantGameData(games);
 }
 
-/*
-  returns *occured* already games according to gameFull:
-  date, time, home team, away team and field, home goal, away goal, event.
-*/
-async function getOldGamesInfo(game_ids_list){
-  const current_date = league_utils.convertDate(new Date());
-  let games_with_ids = await DButils.execQuery(
-    `SELECT * FROM games
-    WHERE game_id in (${game_ids_list.toString()})
-    AND (date <= '${current_date} AND home_goal is not NULL AND away_goal is not NULL)'
-    ORDER BY date ASC, time ASC`
-  )
-  let games_with_names = games_with_ids.map( async (game)=>{
-    const home_team_name = await teams_utils.getTeamNameById(game.home_team);
-    const away_team_name = await teams_utils.getTeamNameById(game.away_team);
-    return {
-      date: game.date,
-      time: game.time,
-      home_team: home_team_name.name,
-      away_team: away_team_name.name,
-      field: game.field,
-      home_goal: game.home_goal,
-      away_goal: game.away_goal,
-      event: game.event,
-    };
-  })
-  let games = await Promise.all(games_with_names);
-  return games.map((game_info) => {
-    return {
-      date: game_info.date,
-      time: game_info.time,
-      home_team: game_info.home_team,
-      away_team: game_info.away_team,
-      field: game_info.field,
-      home_goal: game_info.home_goal,
-      away_goal: game_info.away_goal,
-      event: game_info.event,
-    };
-  });
-}
-
 function extractRelevantGameData(games_info) {
     return games_info.map((game_info) => {
       
@@ -118,15 +77,26 @@ async function addResultToGame(game_id, home_result, away_result){
   return 1;
 }
 
+/*
+* checks if game has finished or is a future game;
+  return number: 0 - all good, 1 - game has finished,
+   2 - game does not exist, 3 - its a future game.
+*/
 async function gameHasFinishedAlready(game_id){
   const game = (await DButils.execQuery(
     `select home_goal, away_goal, date from games
      where game_id = ${game_id};`)
   )[0];
-  if(game.home_goal != null || game.away_goal != null || game.date != league_utils.convertDate(new Date())){
-    return 1;
+  if(game){
+    if(game.home_goal != null || game.away_goal != null){
+      return 1;
+    }
+    if(game.date != league_utils.convertDate(new Date())){
+      return 3;
+    }
+    return 0;
   }
-  return 0;
+  return 2;
 }
 
 async function addEventToGame(game_id, minute, description){
@@ -149,7 +119,19 @@ async function addEventToGame(game_id, minute, description){
   );
 }
 
+async function gameExists(game_id){
+  const result = await DButils.execQuery(
+    `select * from games where game_id = ${game_id}`
+  );
+  // if game was found in DB then return 0
+  if(result){
+    return 0;
+  }
+  return 1;
+}
+
 exports.getGamesInfo = getGamesInfo;
 exports.addResultToGame = addResultToGame;
 exports.gameHasFinishedAlready = gameHasFinishedAlready;
 exports.addEventToGame = addEventToGame;
+exports.gameExists = gameExists;

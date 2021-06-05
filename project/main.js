@@ -80,12 +80,12 @@ app.use(function (req, res, next) {
 });
 //#endregion
 
-// ----> For cheking that our server is alive
-app.get("/alive", (req, res) => res.send("I'm aliveeeeee"));
-
 // getting home page
 app.get('/', async (req, res, next) => {
   try{
+    if( Object.keys(req.query).length > 0 ){
+      throw { status: 404, message: "Could not find the requested url"};
+    }
     const league_details = await league_utils.getLeagueDetails();
     let fav_games_details = null;
     if (req.session && req.session.user_id){
