@@ -9,14 +9,23 @@ const season_id = 17328;
 
 router.get('/teams', async(req, res,next) => {
    try{
-      let team_name = req.query.team_name;
-      
-
-      let team_previews = await teams_utils.getAllLeagueTeams();
-      if(team_name){
-         team_previews = team_previews.filter(team => team.team_name.toLowerCase().includes(team_name.toLowerCase()));
+      for( value in req.query){
+         if(value != "name"){
+            throw {status:404, message:"could not find URL"}
+         }
       }
-      res.status(200).send(team_previews);
+      let team_previews = await teams_utils.search(req);
+      
+      session = req.session; 
+      if(session){
+         session.last_search = team_previews;
+      }
+      if(team_previews == "no teams"){
+         res.status(204).send("")
+      }else{
+         res.status(200).send(team_previews);
+      }
+      
    }
    catch(error){
       next(error);
@@ -25,35 +34,23 @@ router.get('/teams', async(req, res,next) => {
 
 router.get('/players', async(req, res,next) => {
    try{
-      let player_name = req.query.player_name;
-      let player_team = req.query.team_name;
-      let player_position = req.query.position;      
-      let playerList = await players_utils.getAllLeaguePlayers(season_id);
-      
-      if(player_position || player_name || player_team){
-         playerList = playerList.map((player)=>{
-            if(player_position){
-               if(player_position != player.position){
-                  return null;
-               }
-            }
-            if(player_name){
-               if(!player.fullname.toLowerCase().includes(player_name.toLowerCase())){
-                  return null;
-               }
-            }
-            if(player_team){
-               if(!player.team.toLowerCase().includes(player_team.toLowerCase())){
-                  return null;
-               }
-            }
-            return player;
-         });
-         playerList = playerList.filter(player => player != null);
+      for( value in req.query){
+         if(value != "name" && value != "position" && value != "team_name"){
+            throw {status:404, message:"could not find URL"}
+         }
       }
+      
+      let playerList = await players_utils.search(req);
+
+      let session = req.session;
+      if(session){
+         session.last_search = playerList;
+      }
+      if(playerList == "no players"){
+         res.status(204).send("No results");
+      }else{
       res.status(200).send(playerList);
-
-
+      }
    }
    catch(error){
       next(error);
@@ -62,14 +59,41 @@ router.get('/players', async(req, res,next) => {
 
 router.get('/', async(req, res, next) => {
    try{
-      let teams = await teams_utils.getAllLeagueTeams();
-      let players = await players_utils.getAllLeaguePlayers(season_id);
+      for( value in req.query){
+         if(value != "name"){
+            throw {status:404, message:"could not find URL"}
+         }
+      }
+
+      let session = req.session;
+
+      if(req.query.name){
+         let teams =await teams_utils.search(req);
+         let players =await players_utils.search(req);
+         let info = {
+            teams: teams,
+            players: players,
+         }
+         if(teams == "no teams" && players == "no players"){
+            res.status(204).send("");
+         }else{
+            res.status(200).send(info);
+         }
+      }
+      else if(session){
+         if (session.last_search){
+            res.status(200).send(session.last_search);
+         }
+      }
+      else {
+         let teams = await teams_utils.getAllLeagueTeams();
+         let players = await players_utils.getAllLeaguePlayers(season_id);
 
       info = {
          teams: teams,
          players: players,
       }
-      res.status(200).send(info);
+      res.status(200).send(info);}
    }
    catch(error){
       next(error);

@@ -22,8 +22,6 @@ async function getTeamsInfo(team_ids_list){
     return extractPreview(teams);
 }
 
-
-
 async function getTeamNameById(team_id){
     const team = await axios.get(
         `https://soccer.sportmonks.com/api/v2.0/teams/${team_id}`,
@@ -118,11 +116,9 @@ function extractPreview(teams_list){
 
 function extractPreviewForSearch(teams_list){
    return teams_list.map( (team) => {
-       return {
-           team_id: team.id,
+       return {          
            team_name: team.name,
-           team_symbol: team.logo_path,
-           team_twitter: team.twitter,
+           team_symbol: team.logo_path,          
        }
    })
 }
@@ -138,6 +134,26 @@ async function getAllLeagueTeams(){
    return team_previews;
 
 }
+
+async function search(req){
+    // try{
+        let team_name = req.query.name;
+        let team_previews = await getAllLeagueTeams();
+        if(team_name){
+           team_previews = team_previews.filter(team => team.team_name.toLowerCase().includes(team_name.toLowerCase()));
+        }
+        if (team_previews.length === 0 ){
+           return("no teams");
+        }
+        
+        return team_previews;
+    //  }
+    //  catch(error){
+    //     next(error);
+    //  }
+}
+
+exports.search = search;
 exports.getTeamsInfo = getTeamsInfo;
 exports.extractPreviewForSearch = extractPreviewForSearch;
 exports.getTeamNameById = getTeamNameById;

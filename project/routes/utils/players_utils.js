@@ -1,7 +1,7 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const DButils = require('./DButils');
-// const TEAM_ID = "85";
+const season_id = 17328;
 
 async function getPlayerIdsByTeam(team_id) {
   let player_ids_list = [];
@@ -111,12 +111,12 @@ async function getPlayersByTeam(team_id) {
   return players_info;
 }
 
-async function searchPlayerInDB(name){
-  let player_names =( 
-    await DButils.execQuery(`select name from players where name LIKE '%${name}%'`
-  ));
-  return player_names;
-}
+// async function searchPlayerInDB(name){
+//   let player_names =( 
+//     await DButils.execQuery(`select name from players where name LIKE '%${name}%'`
+//   ));
+//   return player_names;
+// }
 
 async function getAllLeaguePlayers(season_id){
 
@@ -145,9 +145,55 @@ async function getAllLeaguePlayers(season_id){
   return list_toRet;
 }
 
+function searchRelevantPlayers(playerList,player_name,player_team,player_position){
+    playerList = playerList.map((player)=>{
+      if(player_position){
+        if(player_position != player.position){
+            return null;
+        }
+      }
+      if(player_name){
+        if(!player.fullname.toLowerCase().includes(player_name.toLowerCase())){
+            return null;
+        }
+      }
+      if(player_team){
+        if(!player.team.toLowerCase().includes(player_team.toLowerCase())){
+            return null;
+        }
+      }
+      return player;
+  });
+ playerList = playerList.filter(player => player != null);
+ return playerList;
+}
+
+async function search(req){
+  // try{
+      
+    let player_name = req.query.name;
+    let player_team = req.query.team_name;
+    let player_position = req.query.position;      
+    let playerList = await getAllLeaguePlayers(season_id);
+    
+    if(player_position || player_name || player_team){
+
+       playerList = searchRelevantPlayers(playerList,player_name,player_team,player_position);
+       
+    }
+    if(playerList.length === 0 ){
+      return("no players")
+    }
+    return playerList ;
+//  }
+//  catch(error){
+//     next(error);
+//  }
+}
+
 exports.getAllLeaguePlayers = getAllLeaguePlayers;
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
 exports.getPlayersInfoByName = getPlayersInfoByName;
 exports.getPlayerFull = getPlayerFull;
-exports.searchPlayerInDB = searchPlayerInDB;
+exports.search = search;
