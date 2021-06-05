@@ -21,14 +21,4 @@ router.get('/:playerId/ticketDetails', async (req, res, next) => {
     }
 });
 
-router.get('/search/:name', async (req, res, next) => {
-    try{
-        let possible_names = await players_utils.searchPlayerInDB(req.params.name);
-        const players_info = await players_utils.getPlayersInfoByName(possible_names);
-        res.status(200).send(players_info);
-    } catch (error){
-        next(error);
-    }
-});
-
 module.exports = router;
