@@ -7,7 +7,14 @@ router.post("/Register", async (req, res, next) => {
   try {
     // parameters exists
     // valid parameters
-    // username exists
+    const { username, first_name, last_name, country,
+       password, confirmation_password, email, picture } = req.body;
+
+    if (!(username && first_name && last_name && country &&
+      password && confirmation_password && email && picture)){
+        throw { status: 400, message: "You must fill all fields"}
+      }
+    
     const users = await DButils.execQuery(
       "SELECT username, email FROM users"
     );

@@ -69,9 +69,15 @@ router.post("/addGame", async (req, res, next) => {
 });
 
 router.get('/current_games', async(req, res, next) => {
-  
-  const all_games = await league_utils.getPastAndFutureGames();
-  res.status(200).send(all_games);
+  try{
+    if( req.query || req.params ){
+      throw { status: 404, message: "could not found the requested url"};
+    }
+    const all_games = await league_utils.getPastAndFutureGames();
+    res.status(200).send(all_games);
+  }catch(error){
+    next(error);
+  }
 });
 
 module.exports = router;

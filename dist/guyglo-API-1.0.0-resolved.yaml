@@ -43,21 +43,8 @@ paths:
           description: Bad Request. Could not find the requested URL.
         "409":
           description: Can't complete the request.
-  /about:
-    get:
-      tags:
-      - default
-      summary: about page
-      responses:
-        "200":
-          description: sucsessful request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/about'
-        "404":
-          description: Bad Request. Could not find the requested URL.
-  /register:
+
+  /Register:
     post:
       tags:
       - authentication
@@ -74,7 +61,8 @@ paths:
         "400":
           description: Could not register since some fields are empty. You must fill all fields.
         "409":
-          description: Username already exist
+          description: Username or Email already exist
+  
   /login:
     post:
       tags:
@@ -98,6 +86,7 @@ paths:
                 example: session=v1ad5vad1v5adv
         "401":
           description: Authorization has failed due to wrong username or password.
+  
   /logout:
     post:
       tags:
@@ -115,6 +104,7 @@ paths:
                 type: string
                 example: session=deleted;; Expires=Wed, 24-Feb-2021 00:03:21 GMT;
                   Path=/
+  
   /players/{playerId}/ticketDetails:
     get:
       tags:
@@ -138,66 +128,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/player_response'
-        "204":
-          description: No such player id.
         "404":
           description: Bad Request. Could not find the requested URL.
-  /players/search/{name}:
-      get:
-        tags:
-        - player
-        summary: search a player by partial name or full name
-        paramaters:
-          - name: name
-            in: path
-            description: name of player
-            required: true
-            style: simple
-            explode: false
-            schema:
-              type: string
-              example: 'messi'
-        responses:
-          "200":
-            description: Successfully pulled player details.
-            content:
-              application/json:
-                schema:
-                  players:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/playerPreview'
-          "204":
-            description: No such player id.
-          "404":
-            description: Bad Request. Could not find the requested URL.
-  /coaches/{coachId}/ticketDetails:
-    get:
-      tags:
-      - coach
-      summary: coach's ticket info
-      description: shows coach's ticket info.
-      parameters:
-      - name: coachId
-        in: path
-        description: Identifier of coach
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: firstName lastName
-      responses:
-        "200":
-          description: Successfully pulled coach details.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/coach_response'
-        "204":
-          description: No such coach id.
-        "404":
-          description: Bad Request. Could not find the requested URL.
+  
   /teams/{teamId}/ticketDetails:
     get:
       tags:
@@ -221,29 +154,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/team_response'
-        "204":
-          description: No such coach id.
         "404":
           description: Bad Request. Could not find the requested URL.
-  /users/addFavorite:
-    post:
-      tags:
-      - user
-      summary: add coach  player or team to a user's favorites
-      description: adding coach, player or team to favorites
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_2'
-        required: true
-      responses:
-        "201":
-          description: Successfully added to favorites.
-        "409":
-          description: Already in favorites. Cannot add again.
-      security:
-        - cookieAuth: []
+  
   /users/favoritePlayers:
     post:
       tags:
@@ -259,8 +172,7 @@ paths:
       responses:
         "201":
           description: Successfully added player to favorites.
-        "409":
-          description: Already in favorites. Cannot add again.
+
     get:
       tags:
       - user
@@ -273,10 +185,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/fav_players'
+        "204":
+          description: No content. no favorite players were added
         "404":
           description: Bad Request. Could not find the requested URL.
     security:
       - cookieAuth: []
+  
   /users/favoriteTeams:
     post:
       tags:
@@ -292,8 +207,7 @@ paths:
       responses:
         "201":
           description: Successfully added team to favorites.
-        "409":
-          description: Already in favorites. Cannot add again.
+
     get:
       tags:
       - user
@@ -306,10 +220,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/fav_teams'
+        "204":
+          description: No content. no favorite teams were added
         "404":
           description: Bad Request. Could not find the requested URL.
     security:
         - cookieAuth: []
+        
   /users/favoriteGames:
     post:
       tags:
@@ -325,8 +242,7 @@ paths:
       responses:
         "201":
           description: Successfully added game to favorites.
-        "409":
-          description: Already in favorites. Cannot add again.
+        
     get:
       tags:
       - user
@@ -339,10 +255,13 @@ paths:
             aplication/json:
               schema:
                 $ref: '#/components/schemas/fav_games'
+        "204":
+          description: No content. No favorite games were added.
         "404":
           description: Bad Request. Could not find the requested URL.
     security:
       - cookieAuth: []
+
   /league/addGame:
     post:
       tags:
@@ -378,6 +297,7 @@ paths:
                 $ref: '#/components/schemas/current_games'
         "404":
           description: Bad Request. Could not find the requested URL.
+
 /league/manage:
     get:
       tags:
@@ -463,7 +383,7 @@ paths:
                 schema:
                   $ref: '#/components/schemas/teamSearch'
         
-  /search/players/:
+  /search/players:
       get:
         tags:
         - search
@@ -540,6 +460,7 @@ components:
       cookieAuth: 
         type: apiKey
         in: cookie
+
     playerPreview:
       type: object
       properties:
@@ -555,6 +476,7 @@ components:
           type: integer
           example: 1
       description: shows some information on player.
+    
     playerFull:
       type: object
       properties:
@@ -577,34 +499,7 @@ components:
           type: string
           example: 90 kg
       description: full information about player.
-    coachPreview:
-      type: object
-      properties:
-        full_name:
-          type: string
-          example: Israel Israeli
-        current_team_name:
-          type: string
-          example: Inter
-        picture:
-          type: string
-      description: shows some information on coach.
-    coachFull:
-      type: object
-      properties:
-        common_name:
-          type: string
-          example: alon
-        nationality:
-          type: string
-          example: Italy
-        birth_date:
-          type: string
-          example: 1991-07-31
-        birth_country:
-          type: string
-          example: Italy
-      description: full information about coach.
+    
     leagueInfo:
       type: object
       properties:
@@ -793,6 +688,7 @@ components:
           minLength: 5
           type: string
           example: israel1!
+          
     homePage:
       type: object
       properties:
@@ -803,6 +699,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/gamePreview'
+
     player_response:
       type: object
       properties:
@@ -810,25 +707,14 @@ components:
           $ref: '#/components/schemas/playerPreview'
         Player_full:
           $ref: '#/components/schemas/playerFull'
-    coach_response:
-      type: object
-      properties:
-        Coach_preview:
-          $ref: '#/components/schemas/coachPreview'
-        Coach_full:
-          $ref: '#/components/schemas/coachFull'
+
     body_2:
       type: object
       properties:
         id:
           type: integer
           example: 50
-    about:
-      type: object
-      properties:
-        details:
-          type: string
-          example: this is some information about the site
+
     team_response:
       type: object
       properties:
@@ -836,6 +722,7 @@ components:
           $ref: '#/components/schemas/teamPreview'
         team full:
           $ref: '#/components/schemas/teamFull'
+
     teamPreview:
       type: object
       properties:
@@ -851,6 +738,7 @@ components:
           type: string
           example: "@FCBayernEN"
       description: preview and full info of a team object
+    
     teamFull:
       type: object
       properties:       
@@ -887,6 +775,7 @@ components:
           type: array
           itmes:
             $ref: '#/components/schemas/playerPreview'
+    
     fav_teams:
       type: object
       properties:
@@ -894,6 +783,7 @@ components:
           type: array
           itmes:
             $ref: '#/components/schemas/teamPreview'
+    
     fav_games:
       type: object
       properties:
