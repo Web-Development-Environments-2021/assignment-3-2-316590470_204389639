@@ -8,7 +8,7 @@ router.get('/:playerId/ticketDetails', async (req, res, next) => {
         try{
             var player_preview = await players_utils.getPlayersInfo([player_id]);
         } catch (error){
-            throw { status: 400, message: "bad request"};
+            throw { status: 404, message: "bad request"};
         }
         const player_full = await players_utils.getPlayerFull(player_id);
         const player_merged = {

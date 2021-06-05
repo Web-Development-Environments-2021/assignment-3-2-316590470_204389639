@@ -42,9 +42,16 @@ router.post("/favoritePlayers", async (req, res, next) => {
  */
  router.get("/favoritePlayers", async (req, res, next) => {
   try {
+    if( req.params || req.query ){
+      throw {status: 404, message: "Could not found the requested url"};
+    }
     const user_id = req.session.user_id;
     let favorite_players = {};
     const player_ids = await users_utils.getFavoritePlayers(user_id);
+    // if there are no favorite players
+    if( player_ids.length == 0 ){
+      res.status(204).send("no favorite players were added");
+    }
     let player_ids_array = [];
     player_ids.map((element) => player_ids_array.push(element.player_id)); //extracting the players ids into array
     const results = await players_utils.getPlayersInfo(player_ids_array);
@@ -71,9 +78,16 @@ router.post("/favoriteTeams", async (req, res, next) => {
  */
  router.get("/favoriteTeams", async (req, res, next) => {
   try {
+    if( req.params || req.query ){
+      throw {status: 404, message: "Could not found the requested url"};
+    }
     const user_id = req.session.user_id;
     let favorite_teams = {};
     const team_ids = await users_utils.getFavoriteTeams(user_id);
+    // if no teams were added
+    if( team_ids.length == 0){
+      res.status(204).send("no favorite teams were added");
+    }
     let team_ids_array = [];
     team_ids.map((element) => team_ids_array.push(element.team_id)); //extracting the teams ids into array
     const results = await teams_utils.getTeamsInfo(team_ids_array); 
@@ -100,8 +114,15 @@ router.post("/favoriteGames", async (req, res, next) => {
  */
  router.get("/favoriteGames", async (req, res, next) => {
   try {
+    if( req.params || req.query ){
+      throw {status: 404, message: "Could not found the requested url"};
+    }
     const user_id = req.session.user_id;
     const results = await users_utils.getFavoriteGames(user_id);
+    // if no games were added
+    if( results.length == 0){
+      res.status(204).send("No favorite games were added");
+    }
     res.status(200).send(results);
   } catch (error) {
     next(error);
