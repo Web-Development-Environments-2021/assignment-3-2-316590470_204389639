@@ -3,6 +3,12 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const DButils = require('./DButils');
 const season_id = 17328;
 
+/**function returns ids about a team's players
+ * input:
+ *    team_id: (int) team identifire
+ * return"
+ *    player_ids_list: ([int]) array of player ids of the players that play in the input team
+ */
 async function getPlayerIdsByTeam(team_id) {
   let player_ids_list = [];
   const team = await axios.get(`${api_domain}/teams/${team_id}`, {
@@ -16,7 +22,12 @@ async function getPlayerIdsByTeam(team_id) {
   );
   return player_ids_list;
 }
-
+/**funtion returns deatails of a teams players
+ * input:
+ *    player_ids_list: ([int]) a list of a certain team's player Id's
+ * return:
+ *    ([JSON]) Array of player_preview objects of a teams players
+ */
 async function getPlayersInfo(players_ids_list) {
   let promises = [];
   players_ids_list.map((id) =>
@@ -88,7 +99,7 @@ function extractRelevantPlayerData(players_info) {
   });
 }
 
-
+// returns a player's "Full info" accordind to API schema given a player id
 async function getPlayerFull(player_id){
   const player_full = await axios.get(`${api_domain}/players/${player_id}`, {
     params: {
@@ -145,50 +156,65 @@ async function getAllLeaguePlayers(season_id){
   return list_toRet;
 }
 
+/**function searches relavant player of partial or full match to a given query
+ * input:
+ *    playerList: ([JSON]) List of player object to search within
+ *    player_name: (string) partial or full name of the player being searched
+ *    player_team: (string) FILTER - name of the team a the player plays in
+ *    player_position: (int) FILTER -  position a player plays in
+ * return:
+ *    playerList: ([JSON]) List of playerPreview object of all the relevant results return from the search
+ */
 function searchRelevantPlayers(playerList,player_name,player_team,player_position){
-    playerList = playerList.map((player)=>{
-      if(player_position){
-        if(player_position != player.position){
-            return null;
-        }
+  // filter players if they are not the rifght position
+  playerList = playerList.map((player)=>{
+    if(player_position){
+      if(player_position != player.position){
+          return null;
       }
-      if(player_name){
-        if(!player.fullname.toLowerCase().includes(player_name.toLowerCase())){
-            return null;
-        }
+    }
+    // filter player is they dont have the right name
+    if(player_name){
+      if(!player.fullname.toLowerCase().includes(player_name.toLowerCase())){
+          return null;
       }
-      if(player_team){
-        if(!player.team.toLowerCase().includes(player_team.toLowerCase())){
-            return null;
-        }
+    }
+    // filter players if they dont play fir the right team
+    if(player_team){
+      if(!player.team.toLowerCase().includes(player_team.toLowerCase())){
+          return null;
       }
-      return player;
+    }
+    return player;
   });
+  //filter all nulls from the list
  playerList = playerList.filter(player => player != null);
  return playerList;
 }
 
+/**main seach function
+ * input:
+ *    req: HTTP GET request
+ * return:
+ *    playerList: ([JSON]) array of player Previews objects of relevant player to the query
+ */
 async function search(req){
-  // try{
-      
-    let player_name = req.query.name;
-    let player_team = req.query.team_name;
-    let player_position = req.query.position;      
-    let playerList = await getAllLeaguePlayers(season_id);
-    
-    if(player_position || player_name || player_team){
+ 
+  let player_name = req.query.name;
+  let player_team = req.query.team_name;
+  let player_position = req.query.position;      
+  let playerList = await getAllLeaguePlayers(season_id);
+  
+  if(player_position || player_name || player_team){
 
-       playerList = searchRelevantPlayers(playerList,player_name,player_team,player_position);
-       
-    }
-    if(playerList.length === 0 ){
-      return("no players")
-    }
-    return playerList ;
-//  }
-//  catch(error){
-//     next(error);
-//  }
+      playerList = searchRelevantPlayers(playerList,player_name,player_team,player_position);
+      
+  }
+  if(playerList.length === 0 ){
+    return("no players")
+  }
+  return playerList ;
+
 }
 
 exports.getAllLeaguePlayers = getAllLeaguePlayers;

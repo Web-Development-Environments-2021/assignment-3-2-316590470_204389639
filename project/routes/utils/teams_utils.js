@@ -5,6 +5,12 @@ const league =  require("./league_utils");
 const games = require("./games_utils");
 const season_Id = 17328 ;
 
+/**this function returns info for a given list of teams
+ * input:
+ *      teams_ids_list: ([int]) array of team ids
+ * return:
+ *      ([JSON]) An array of team_preview objects for each team in original list
+ */
 async function getTeamsInfo(team_ids_list){
     let teams_promises = [];
     team_ids_list.map((team_id)=>{
@@ -22,6 +28,7 @@ async function getTeamsInfo(team_ids_list){
     return extractPreview(teams);
 }
 
+// Do I really need to explain this function?
 async function getTeamNameById(team_id){
     const team = await axios.get(
         `https://soccer.sportmonks.com/api/v2.0/teams/${team_id}`,
@@ -36,6 +43,12 @@ async function getTeamNameById(team_id){
     }
 }
 
+/**this function iterates over all the games in the DB to find all previous anf future games of a given team
+ * input:
+ *      team_id: (int) A unique integer assigned to a team and identifies it
+ * return:
+ *      all_games: (JSON) object containing all of a team's past and future games ready to display      
+ */
 async function getPastAndFutureGames(team_id){
    //retriving all relevant games from the DB if existing
    let tdate = league.convertDate(new Date())
@@ -114,6 +127,7 @@ function extractPreview(teams_list){
     })
 }
 
+/** extract team name & symbol from the team's information */
 function extractPreviewForSearch(teams_list){
    return teams_list.map( (team) => {
        return {          
@@ -123,8 +137,11 @@ function extractPreviewForSearch(teams_list){
    })
 }
 
-async function getAllLeagueTeams(){
-   
+/**get all teams that play in this league's season
+ * input: none
+ * return: ([JSON]) An array of team_preview object of the league's teams
+*/
+async function getAllLeagueTeams(){   
    let all_teams_full_details = await axios.get(`https://soccer.sportmonks.com/api/v2.0/teams/season/${season_Id}`,{
       params: {
          api_token: process.env.api_token,
@@ -135,22 +152,27 @@ async function getAllLeagueTeams(){
 
 }
 
+/** search for a team with a partial or full fit to the input enterd in the query params 
+ * input:
+ *      req: HTTP GET request forwarded from router
+ * return: team_previews ([JSON]) An array of team_preview object of the relevant search results
+*/
 async function search(req){
-    // try{
-        let team_name = req.query.name;
-        let team_previews = await getAllLeagueTeams();
-        if(team_name){
-           team_previews = team_previews.filter(team => team.team_name.toLowerCase().includes(team_name.toLowerCase()));
-        }
-        if (team_previews.length === 0 ){
-           return("no teams");
-        }
-        
-        return team_previews;
-    //  }
-    //  catch(error){
-    //     next(error);
-    //  }
+    
+    let team_name = req.query.name;
+    //retrieve all the leagues teams information
+    let team_previews = await getAllLeagueTeams();
+    // retrieve all relevant teams
+    if(team_name){
+        team_previews = team_previews.filter(team => team.team_name.toLowerCase().includes(team_name.toLowerCase()));
+    }
+    //if no results
+    if (team_previews.length === 0 ){
+        return("no teams");
+    }
+
+    return team_previews;
+
 }
 
 exports.search = search;

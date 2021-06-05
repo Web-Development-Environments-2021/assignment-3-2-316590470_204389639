@@ -6,20 +6,26 @@ const DBUtils = require("./utils/DButils");
 const { Router } = require("express");
 var router = express.Router();
 const season_id = 17328;
-
+/**
+ * search for a specific team by name.
+ * no filters relevant for this query
+ * if a user is logged in- save results to session memory.
+ */
 router.get('/teams', async(req, res,next) => {
    try{
+      //check that URL is valid
       for( value in req.query){
          if(value != "name"){
             throw {status:404, message:"could not find URL"}
          }
       }
       let team_previews = await teams_utils.search(req);
-      
+      //  if logged in  - save to memory
       session = req.session; 
       if(session){
          session.last_search = team_previews;
       }
+      // if no results
       if(team_previews == "no teams"){
          res.status(204).send("")
       }else{
@@ -31,9 +37,15 @@ router.get('/teams', async(req, res,next) => {
       next(error);
    }
 });
-
+/**
+ * searching specifically for players:
+ * can be filtered by {name: player name , position: the position a player playes in,
+ *  team_name: the team a player plays for}
+ * if a user is logged in - save results to session memory
+ */
 router.get('/players', async(req, res,next) => {
    try{
+      //check that URL is valid 
       for( value in req.query){
          if(value != "name" && value != "position" && value != "team_name"){
             throw {status:404, message:"could not find URL"}
@@ -41,11 +53,12 @@ router.get('/players', async(req, res,next) => {
       }
       
       let playerList = await players_utils.search(req);
-
+      // if logged in - save to memory
       let session = req.session;
       if(session){
          session.last_search = playerList;
       }
+      //if no results
       if(playerList == "no players"){
          res.status(204).send("No results");
       }else{
@@ -57,6 +70,13 @@ router.get('/players', async(req, res,next) => {
    }
 });
 
+
+/* 
+main search page: 
+if exist prev search - display prev searc
+else if exist name param - display search results
+else - display all teams and players info
+*/
 router.get('/', async(req, res, next) => {
    try{
       for( value in req.query){
@@ -64,9 +84,8 @@ router.get('/', async(req, res, next) => {
             throw {status:404, message:"could not find URL"}
          }
       }
-
+      // search league for relevant matches
       let session = req.session;
-
       if(req.query.name){
          let teams =await teams_utils.search(req);
          let players =await players_utils.search(req);
@@ -74,17 +93,20 @@ router.get('/', async(req, res, next) => {
             teams: teams,
             players: players,
          }
+         //if no results returned 
          if(teams == "no teams" && players == "no players"){
             res.status(204).send("");
          }else{
             res.status(200).send(info);
          }
       }
+      // check if sessio exists and has a previous search
       else if(session){
          if (session.last_search){
             res.status(200).send(session.last_search);
          }
       }
+      // default when no paramater or prev searches
       else {
          let teams = await teams_utils.getAllLeagueTeams();
          let players = await players_utils.getAllLeaguePlayers(season_id);
