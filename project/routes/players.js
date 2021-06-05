@@ -6,12 +6,15 @@ var router = express.Router();
  */
 router.get('/:playerId/ticketDetails', async (req, res, next) => {
     try{
+        if( Object.keys(req.query).length > 0 ){
+            throw { status: 404, message: "could not find the requested url"};
+        }
         const player_id = req.params.playerId;
         try{
             // get dtails of a single player
             var player_preview = await players_utils.getPlayersInfo([player_id]);
         } catch (error){
-            throw { status: 404, message: "bad request"};
+            throw { status: 404, message: "Could not find the requested url"};
         }
         // get the full details of the player from the API
         const player_full = await players_utils.getPlayerFull(player_id);

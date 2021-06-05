@@ -24,6 +24,10 @@ router.post('/addResult', async (req, res, next) => {
         const game_id = req.body.game_id;
         const home_result = req.body.home_team_result;
         const away_result = req.body.away_team_result;
+        // valid parameters
+        if(!(game_id && home_result && away_result) || (game_id<0 || home_result<0 || away_result<0)){
+          throw { status: 400, message: "Invalid syntax"};
+        }
         const user = (
             await DButils.execQuery(
                 `SELECT * FROM users WHERE user_id = '${req.session.user_id}'`
@@ -33,9 +37,9 @@ router.post('/addResult', async (req, res, next) => {
             throw { status: 401, message: "Unauthorized"}
         }
         // check if game already has a result
-        const hasFinished = await games_utils.gameHasFinishedAlready(game_id);
-        if( hasFinished == 1 ){
-            throw { status: 409, message: "This game is either finished or not today" };
+        const valid_game = await games_utils.gameHasFinishedAlready(game_id);
+        if( valid_game !=0 ){
+            throw { status: 409, message: "Found conflict" };
         }
         // add result to game
         const success = await games_utils.addResultToGame(game_id, home_result, away_result);
@@ -51,6 +55,12 @@ router.post('/addEvent', async (req, res, next) => {
       const game_id = req.body.game_id;
       const event_minute = req.body.minute;
       const event_desc = req.body.description;
+      // valid parameters
+      if(!(game_id && event_minute && event_desc && event_desc.player_id && event_desc.event_type) ||
+       (game_id < 0 || event_minute < 0)){
+        throw { status: 400, message: "Invalid syntax"};
+      }
+
       const user = (
         await DButils.execQuery(
             `SELECT * FROM users WHERE user_id = '${req.session.user_id}'`
@@ -60,9 +70,9 @@ router.post('/addEvent', async (req, res, next) => {
           throw { status: 401, message: "Unauthorized"}
       }
       // check if game has finished
-      const hasFinished = await games_utils.gameHasFinishedAlready(game_id);
-      if( hasFinished == 1 ){
-          throw { status: 409, message: "This game is either finished or not today" };
+      const valid_game = await games_utils.gameHasFinishedAlready(game_id);
+      if( valid_game != 0){
+        throw { status: 400, message: "Bad request" };
       }
       // add event to game
       const success = await games_utils.addEventToGame(game_id, event_minute, event_desc);

@@ -75,15 +75,26 @@ async function addResultToGame(game_id, home_result, away_result){
   return 1;
 }
 
+/*
+* checks if game has finished or is a future game;
+  return number: 0 - all good, 1 - game has finished,
+   2 - game does not exist, 3 - its a future game.
+*/
 async function gameHasFinishedAlready(game_id){
   const game = (await DButils.execQuery(
     `select home_goal, away_goal, date from games
      where game_id = ${game_id};`)
   )[0];
-  if(game.home_goal != null || game.away_goal != null || game.date != league_utils.convertDate(new Date())){
-    return 1;
+  if(game){
+    if(game.home_goal != null || game.away_goal != null){
+      return 1;
+    }
+    if(game.date != league_utils.convertDate(new Date())){
+      return 3;
+    }
+    return 0;
   }
-  return 0;
+  return 2;
 }
 
 async function addEventToGame(game_id, minute, description){
@@ -106,9 +117,21 @@ async function addEventToGame(game_id, minute, description){
   );
 }
 
+async function gameExists(game_id){
+  const result = await DButils.execQuery(
+    `select * from games where game_id = ${game_id}`
+  );
+  // if game was found in DB then return 0
+  if(result){
+    return 0;
+  }
+  return 1;
+}
+
 exports.getGamesInfo = getGamesInfo;
 exports.addResultToGame = addResultToGame;
 exports.gameHasFinishedAlready = gameHasFinishedAlready;
 exports.addEventToGame = addEventToGame;
 exports.getGameEvents = getGameEvents;
 exports.getGamesInfo = getGamesInfo;
+exports.gameExists = gameExists;

@@ -1,5 +1,5 @@
 -- select * from events
-delete from events
+-- delete from events
 -- drop table events;
 -- create table events (
 --     EID int not null UNIQUE,

@@ -12,34 +12,43 @@ const season_Id = 17328 ;
  *      ([JSON]) An array of team_preview objects for each team in original list
  */
 async function getTeamsInfo(team_ids_list){
-    let teams_promises = [];
-    team_ids_list.map((team_id)=>{
-        teams_promises.push( 
-            axios.get(
+    try{
+        let teams_promises = [];
+        team_ids_list.map((team_id)=>{
+            teams_promises.push( 
+                axios.get(
+                `https://soccer.sportmonks.com/api/v2.0/teams/${team_id}`,
+                {
+                    params: {
+                    api_token: process.env.api_token,
+                    },
+                }
+            ));  
+        });
+        let teams = await Promise.all(teams_promises);
+        return extractPreview(teams);
+    } catch(error){
+        return 1;
+    }
+}
+
+
+// Do I really need to explain this function?
+async function getTeamNameById(team_id){
+    try{
+        const team = await axios.get(
             `https://soccer.sportmonks.com/api/v2.0/teams/${team_id}`,
             {
                 params: {
                 api_token: process.env.api_token,
                 },
             }
-        ));  
-    });
-    let teams = await Promise.all(teams_promises);
-    return extractPreview(teams);
-}
-
-// Do I really need to explain this function?
-async function getTeamNameById(team_id){
-    const team = await axios.get(
-        `https://soccer.sportmonks.com/api/v2.0/teams/${team_id}`,
-        {
-            params: {
-            api_token: process.env.api_token,
-            },
+        );
+        return{
+            name: team.data.data.name,
         }
-    );
-    return{
-        name: team.data.data.name,
+    }catch(error){
+        return 1;
     }
 }
 
