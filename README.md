@@ -1,30 +1,30 @@
 # Assignment-3-2-316590470-204389639
 
 - [Assignment-3-2-316590470-204389639](#assignment-3-2-316590470-204389639)
-- [Navigator](#navigator)
-- [About](#about)
-- [Register](#register)
-- [Login](#login)
-- [Homepage](#homepage)
-- [PlayerTicket](#playerticket)
-- [TeamTicket](#teamticket)
-- [Search](#search)
-- [CurrentGames](#currentgames)
-- [Favorites](#favorites)
-- [LeagueManagement](#leaguemanagement)
+  - [Navigator](#navigator)
+  - [About](#about)
+  - [Register](#register)
+  - [Login](#login)
+  - [Homepage](#homepage)
+  - [PlayerTicket](#playerticket)
+  - [TeamTicket](#teamticket)
+  - [Search](#search)
+  - [CurrentGames](#currentgames)
+  - [Favorites](#favorites)
+  - [LeagueManagement](#leaguemanagement)
 
-# Navigator
+## Navigator
 - Will be implemented in front-end.
 
-# About
+## About
 - Will be implemented in front-end.
 
-# Register
+## Register
 - route: http://localhost:{port}/Register
 - validation checks will be implemented in front-end.
 - all users who register will be automatically a fan-user(non admin) and therefore their user_type will be 0.
 
-# Login
+## Login
 - route: http://localhost:{port}/login
 - if you wish to login as an admin then please fill as follow:
     ```
@@ -42,16 +42,16 @@
     ```
 - otherwise you may login with another registered user you created yourself.
 
-# Homepage
+## Homepage
 - route: http://localhost:{port}/
 
-# PlayerTicket
+## PlayerTicket
 - route: http://localhost:{port}/players/{playerId}/ticketDetails
 
-# TeamTicket
+## TeamTicket
 - route http://localhost:{port}/teams/{teamId}/ticketDetails
 
-# Search
+## Search
 - no filters:
   - route: http://localhost:{port}/search
   - you can filter by "name" only, for example:
@@ -68,15 +68,15 @@
     - http://localhost:{port}/search/teams?name=sten
     - will return all *teams* with a name that contains "sten"
 
-# CurrentGames
+## CurrentGames
 - route: http://localhost:{port}/league/current_games
 
-# Favorites
+## Favorites
 - route for players: http://localhost:{port}/users/favoritePlayers
 - route for games: http://localhost:{port}/users/favoriteGames
 - route for teams: http://localhost:{port}/users/favoriteTeams
 
-# LeagueManagement
+## LeagueManagement
 - route for manage page: http://localhost:{port}/league/manage
 - route for adding event: http://localhost:{port}/games/addEvent
   - you may add only one event at a time
