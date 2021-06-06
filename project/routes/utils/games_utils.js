@@ -8,12 +8,13 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
   date, time, home team, away team and field.
 */
 async function getGamesInfo(game_ids_list){
-
+  
   const current_date = league_utils.convertDate(new Date());
   let games_with_ids = await DButils.execQuery(
     `SELECT date, time, home_team, away_team, field FROM games
     WHERE game_id in (${game_ids_list.toString()})
-    AND (date >= '${current_date}' AND home_goal is NULL AND away_goal is NULL)
+    AND (date >= '${current_date}'  
+    AND home_goal is NULL AND away_goal is NULL)
     ORDER BY date ASC, time ASC`
   )
   

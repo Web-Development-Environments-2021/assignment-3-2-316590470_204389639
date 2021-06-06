@@ -1,6 +1,6 @@
 
--- update events
--- SET time = (SELECT time from games where game_id = GID);
+
+select * from games 
 
 -- ALTER TABLE events
 -- DROP COLUMN description ;

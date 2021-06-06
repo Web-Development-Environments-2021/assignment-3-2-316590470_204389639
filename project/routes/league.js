@@ -85,9 +85,9 @@ router.post("/addGame", async (req, res, next) => {
     const team_valid_on_date = await DButils.execQuery(
       `select * from games
        where 
-       ((home_team = ${home_team} OR away_team = ${home_team}) AND date = ${date})
+       ((home_team = ${home_team} OR away_team = ${home_team}) AND date = '${date}')
        OR
-       ((home_team = ${away_team} OR away_team = ${away_team}) AND date = ${date}))
+       ((home_team = ${away_team} OR away_team = ${away_team}) AND date = '${date}');
       `
       ) 
     if(team_valid_on_date){
