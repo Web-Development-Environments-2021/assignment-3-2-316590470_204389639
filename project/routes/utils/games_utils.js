@@ -13,7 +13,7 @@ async function getGamesInfo(game_ids_list){
   let games_with_ids = await DButils.execQuery(
     `SELECT date, time, home_team, away_team, field FROM games
     WHERE game_id in (${game_ids_list.toString()})
-    AND date >= '${current_date}'
+    AND (date >= '${current_date}' AND home_goal is NULL AND away_goal is NULL)
     ORDER BY date ASC, time ASC`
   )
   
@@ -32,6 +32,11 @@ async function getGamesInfo(game_ids_list){
   return extractRelevantGameData(games);
 }
 
+/*
+* this function retrieves all game previews fields.
+  input: list of games of type JSON
+  return: games' previews of type JSON
+*/
 function extractRelevantGameData(games_info) {
     return games_info.map((game_info) => {
       
@@ -44,6 +49,12 @@ function extractRelevantGameData(games_info) {
       };
     });
   }
+
+/*
+* this function returns all events belong to specific game
+  input: (int) GID, game idenitifier
+  return: list of events of type JSON
+*/
 async function getGameEvents(GID){
   const eventList = await DButils.execQuery(
     `select * from events where GID = ${GID}`
@@ -62,7 +73,11 @@ async function getGameEvents(GID){
   
 }
 
-
+/*
+* this function adds a result to not occured game due to current Date
+  input: (int) game_id (game's identifier), (int) home_result (home total goals), (int) away_result (away total goals)
+  return: (int) 1 as in for success
+*/
 async function addResultToGame(game_id, home_result, away_result){
   const game = (await DButils.execQuery(
       `UPDATE games
@@ -97,6 +112,11 @@ async function gameHasFinishedAlready(game_id){
   return 2;
 }
 
+/*
+* this function adds en event to not occured yet game due to current date
+  input: (int) game_id (game's identifier), (int) minute (minute of event at game), (JSON) description
+  return: none
+*/
 async function addEventToGame(game_id, minute, description){
   let next_event_id = (await DButils.execQuery(
     'select * from events'
@@ -117,6 +137,11 @@ async function addEventToGame(game_id, minute, description){
   );
 }
 
+/*
+* this function checks if game exists on database
+  input: (int) game_id (game's identifer),
+  return: (int) 0 - if game was found in the db, (int) 1 - otherwise
+*/
 async function gameExists(game_id){
   const result = await DButils.execQuery(
     `select * from games where game_id = ${game_id}`

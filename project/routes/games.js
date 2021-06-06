@@ -3,6 +3,9 @@ const games_utils = require("./utils/games_utils");
 const DButils = require("./utils/DButils");
 var router = express.Router();
 
+/*
+authenticating all incoming requests by middleware
+*/
 router.use(async function (req, res, next) {
     if (req.session && req.session.user_id) {
       DButils.execQuery("SELECT user_id FROM users")
@@ -18,7 +21,11 @@ router.use(async function (req, res, next) {
     }
   });
 
-// bonus
+/*
+* this is a BONUS route for adding a result to league's game,
+  if any includes added to route then error is thrown,
+  only user of user_type 1 is approved for such activity
+*/
 router.post('/addResult', async (req, res, next) => {
     try{
         const game_id = req.body.game_id;
@@ -36,7 +43,7 @@ router.post('/addResult', async (req, res, next) => {
         if( user.user_type == 0 ){
             throw { status: 401, message: "Unauthorized"}
         }
-        // check if game already has a result
+        // check if game already has finished or is a future game
         const valid_game = await games_utils.gameHasFinishedAlready(game_id);
         if( valid_game !=0 ){
             throw { status: 409, message: "Found conflict" };
@@ -49,7 +56,11 @@ router.post('/addResult', async (req, res, next) => {
     }
 });
 
-// bounus
+/*
+* this is a BONUS route for adding a new event to league's game,
+  if any includes added to route then error is thrown,
+  only user of user_type 1 is approved for such activity
+*/
 router.post('/addEvent', async (req, res, next) => {
   try{
       const game_id = req.body.game_id;
@@ -69,7 +80,7 @@ router.post('/addEvent', async (req, res, next) => {
       if( user.user_type == 0 ){
           throw { status: 401, message: "Unauthorized"}
       }
-      // check if game has finished
+      // check if game has finished or is a future game
       const valid_game = await games_utils.gameHasFinishedAlready(game_id);
       if( valid_game != 0){
         throw { status: 400, message: "Bad request" };

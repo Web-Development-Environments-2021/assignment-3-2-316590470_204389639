@@ -273,7 +273,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/gamePreview'
+              type: object
+              properties:
+                date:
+                  type: string
+                  example: "2021-03-27"
+                time:
+                  type: string
+                  example: "09:30:00"
+                home_team:
+                  type: integer
+                  example: 85
+                away_team:
+                  type: integer
+                  example: 103
+                field:
+                  type: string
+                  example: "Copenhagen"
         required: true
       responses:
         "201": 
@@ -612,7 +628,7 @@ components:
       enum:
         - goal
         - offside
-        - offense
+        - foul
         - red card
         - yellow card
         - injury

@@ -8,6 +8,7 @@ const teams_utils = require("./utils/teams_utils")
 /*
 * getting details about teamId:
   team info, entire players, past and future games.
+  if any includes added to route then error is thrown
 */
 router.get("/:teamId/ticketDetails", async (req, res, next) => {
   try {
@@ -16,9 +17,13 @@ router.get("/:teamId/ticketDetails", async (req, res, next) => {
     }
     let team_preview= await teams_utils.getTeamsInfo([req.params.teamId]);
     if( team_preview == 1){
+      // if team id does not exist
       throw {status: 404, message: "Could not find the requested url"};
     }
+    // getting all games of which team id participates in 
     let all_games = await teams_utils.getPastAndFutureGames(req.params.teamId);
+    
+    // get all team's players
     const team_details = await players_utils.getPlayersByTeam(
       req.params.teamId
     );

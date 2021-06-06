@@ -26,6 +26,7 @@ async function getPlayerIdsByTeam(team_id) {
     return 1;
   }
 }
+
 /**funtion returns deatails of a teams players
  * input:
  *    player_ids_list: ([int]) a list of a certain team's player Id's
@@ -48,6 +49,11 @@ async function getPlayersInfo(players_ids_list) {
   return extractRelevantPlayerData(players_info);
 }
 
+/*
+* this function get all details about players by a given list of names
+  input: (string list) players_names_list,
+  return: (list json objects) players details
+*/
 async function getPlayersInfoByName(players_names_list) {
   let promises = [];
   players_names_list.map((name) =>
@@ -65,6 +71,11 @@ async function getPlayersInfoByName(players_names_list) {
  return extractRelevantPlayerDataByName(players_info[0].data.data);
 }
 
+/*
+* this function extract relevant fields from player json object from getPlayersInfoByName
+  input: json object of player
+  return: json object with relevant fields
+*/
 function extractRelevantPlayerDataByName(players_info) {
   console.log(players_info);
   return players_info.map((player_info) => {
@@ -90,6 +101,11 @@ function extractRelevantPlayerDataByName(players_info) {
   });
 }
 
+/*
+* this function extract relevant fields from player json object from getPlayersInfo
+  input: json object of player
+  return: json object with relevant fields
+*/
 function extractRelevantPlayerData(players_info) {
   return players_info.map((player_info) => {
     const { fullname, image_path, position_id } = player_info.data.data;
@@ -120,6 +136,11 @@ async function getPlayerFull(player_id){
   };
 }
 
+/*
+* this functions get all player by a given team id
+  input: (int) team_id (team's identifier)
+  return: list of json object of all players in team
+*/
 async function getPlayersByTeam(team_id) {
 
   let player_ids_list = await getPlayerIdsByTeam(team_id);
@@ -127,6 +148,11 @@ async function getPlayersByTeam(team_id) {
   return players_info;
 }
 
+/*
+* this function gets all league players
+  input: (int) season_id (current season id of league)
+  return: list of json objects of all player info
+*/
 async function getAllLeaguePlayers(season_id){
   
   let all_teams_full_details = await axios.get(`https://soccer.sportmonks.com/api/v2.0/teams/season/${season_id}?include=squad.player`,{
@@ -216,7 +242,11 @@ async function search(req){
 
 }
 
-
+/*
+* this function checks if a given player id exist in the sportmonks api
+  input: (int) player_id (player's identifier)
+  return: (int) 0 - game was found, (int) 1 - otherwise
+*/
 async function playerExists(player_id){
   try{
     const result = await axios.get(`${api_domain}/players/${player_id}`, {
@@ -232,6 +262,7 @@ async function playerExists(player_id){
     return 1;
   }
 }
+
 exports.getAllLeaguePlayers = getAllLeaguePlayers;
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;

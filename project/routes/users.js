@@ -41,8 +41,10 @@ router.post("/favoritePlayers", async (req, res, next) => {
     next(error);
   }
 });
+
 /**
  * This path returns the favorites players that were saved by the logged-in user
+ * if any includes added to route then error is thrown
  */
  router.get("/favoritePlayers", async (req, res, next) => {
   try {
@@ -65,6 +67,7 @@ router.post("/favoritePlayers", async (req, res, next) => {
     next(error);
   }
 });
+
 /*
 * This path gets body with teamId and saves this player in the favorites list of the logged in user.
 */
@@ -82,8 +85,10 @@ router.post("/favoriteTeams", async (req, res, next) => {
     next(error);
   }
 });
+
 /**
  * This path returns the favorites teams that were saved by the logged-in user
+ * if any includes added to route then error is thrown
  */
  router.get("/favoriteTeams", async (req, res, next) => {
   try {
@@ -106,6 +111,7 @@ router.post("/favoriteTeams", async (req, res, next) => {
     next(error);
   }
 });
+
 /*
 * This path gets body with gameId and saves this game in the favorites list of the logged in user.
 */
@@ -127,8 +133,10 @@ router.post("/favoriteGames", async (req, res, next) => {
     next(error);
   }
 });
+
 /**
  * This path returns the favorites games that were saved by the logged-in user
+ * if any includes added to route then error is thrown
  */
  router.get("/favoriteGames", async (req, res, next) => {
   try {

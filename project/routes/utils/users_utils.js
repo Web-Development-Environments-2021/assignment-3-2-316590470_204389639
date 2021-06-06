@@ -2,6 +2,11 @@ const DButils = require("./DButils");
 const games_utils = require("./games_utils");
 const league_utils = require("./league_utils");
 
+/*
+* function adds favorite player to fav_players db
+  input: (int) user_id (user's identifier in db), (int) player_id (player's identifier),
+  return: none
+*/
 async function markPlayerAsFavorite(user_id, player_id) {
   await DButils.execQuery(
     `insert into fav_players (user_id, player_id)
@@ -12,6 +17,11 @@ async function markPlayerAsFavorite(user_id, player_id) {
   );
 }
 
+/*
+* function returns all user's favorite players from fav_players db 
+  input: (int) user_id (user's identifier in db)
+  return: favorite players' ids list
+*/
 async function getFavoritePlayers(user_id) {
   const player_ids = await DButils.execQuery(
     `select player_id from fav_players where user_id='${user_id}'`
@@ -19,6 +29,11 @@ async function getFavoritePlayers(user_id) {
   return player_ids;
 }
 
+/*
+* function adds favorite game to fav_games db
+  input: (int) user_id (user's identifier in db), (int) game_id (game's identifier),
+  return: none
+*/
 async function markGameAsFavorite(user_id, game_id){
   await DButils.execQuery(
     `insert into fav_games (user_id, game_id)
@@ -29,6 +44,11 @@ async function markGameAsFavorite(user_id, game_id){
   );
 }
 
+/*
+* function returns all user's favorite games from fav_games db 
+  input: (int) user_id (user's identifier in db)
+  return: favorite games' ids list
+*/
 async function getFavoriteGames(user_id) {
   // getting all favorite games ids and deleting all occured favorite games.
   const game_ids = await DButils.execQuery(
@@ -49,6 +69,11 @@ async function getFavoriteGames(user_id) {
   return results;
 }
 
+/*
+* function adds favorite team to fav_teams db
+  input: (int) user_id (user's identifier in db), (int) team_id (team's identifier),
+  return: none
+*/
 async function markTeamAsFavorite(user_id, team_id){
   await DButils.execQuery(
     `insert into fav_teams (user_id, team_id)
@@ -59,6 +84,11 @@ async function markTeamAsFavorite(user_id, team_id){
   );
 }
 
+/*
+* function returns all user's favorite teams from fav_teams db 
+  input: (int) user_id (user's identifier in db)
+  return: favorite teams' ids list
+*/
 async function getFavoriteTeams(user_id) {
   const team_ids = await DButils.execQuery(
     `select team_id from fav_teams where user_id='${user_id}'`

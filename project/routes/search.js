@@ -5,7 +5,8 @@ const teams_utils = require("./utils/teams_utils");
 const DBUtils = require("./utils/DButils");
 const league_utils = require("./utils/league_utils");
 var router = express.Router();
-const season_id = 17328;
+
+
 /**
  * search for a specific team by name.
  * no filters relevant for this query
@@ -37,6 +38,7 @@ router.get('/teams', async(req, res,next) => {
       next(error);
    }
 });
+
 /**
  * searching specifically for players:
  * can be filtered by {name: player name , position: the position a player playes in,
@@ -69,7 +71,6 @@ router.get('/players', async(req, res,next) => {
       next(error);
    }
 });
-
 
 /* 
 main search page: 

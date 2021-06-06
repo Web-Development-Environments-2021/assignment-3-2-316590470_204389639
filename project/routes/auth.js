@@ -3,6 +3,9 @@ var router = express.Router();
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcryptjs");
 
+/* router for registration only,
+  if any includes added to route then error is thrown
+*/
 router.post("/Register", async (req, res, next) => {
   try {
     if( Object.keys(req.query).length > 0 ){
@@ -50,6 +53,9 @@ router.post("/Register", async (req, res, next) => {
   }
 });
 
+/* router for login only,
+  if any includes added to route then error is thrown
+*/
 router.post("/login", async (req, res, next) => {
   try {
     if( Object.keys(req.query).length > 0  ){
@@ -80,7 +86,10 @@ router.post("/login", async (req, res, next) => {
 });
 
 
-// not working
+/* router for logout only,
+  if any includes added to route then error is thrown,
+  resets cookie session
+*/
 router.post("/logout", function (req, res) {
   if( Object.keys(req.query).length > 0  ){
     throw { status: 404, message: "Could not find the requested url"};

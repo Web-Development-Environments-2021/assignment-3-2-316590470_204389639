@@ -124,6 +124,12 @@ async function getPastAndFutureGames(team_id){
    }
    return all_games;
 }
+
+/*
+* this function returns team preview for each team in list according to api
+  input: (list json objects) team_lists
+  return: (list json objects) cut by team preview
+*/
 function extractPreview(teams_list){
     return teams_list.map( (team) => {
         return {

@@ -5,6 +5,11 @@ const teams_utils = require("./teams_utils");
 const games = require("./games_utils");
 const LEAGUE_ID = 271;
 
+/*
+* this function returns current season id of league 271
+  input: none,
+  return: (int) current_season_id 
+*/
 async function getCurrentSeason(){
   try{
     const league = await axios.get(
@@ -22,6 +27,16 @@ async function getCurrentSeason(){
   }
 }
 
+/*
+* this function returns all details about league 271,
+  input: none,
+  return: a json type for league details {
+    league name
+    current season name,
+    current stage name,
+    next game details
+  }
+*/
 async function getLeagueDetails() {
   try{
     const league = await axios.get(
@@ -90,6 +105,11 @@ async function getLeagueDetails() {
   return temp;
 }
 
+/*
+* this function retrieves all games in league,
+  input: none,
+  return: two json objects, one for past games and second for future games according to api scehmas
+*/
 async function getPastAndFutureGames(){
   //retriving all relevant games from the DB if existing
   let tdate = convertDate(new Date())
@@ -156,6 +176,11 @@ async function getPastAndFutureGames(){
   return all_games;
 }
 
+/*
+* this function transfer a date to next format: YYYY-MM-DD
+  input: (Date) date,
+  return: (string) date of type "yyyy-mm-dd"
+*/
 function convertDate(date) {
   var yyyy = date.getFullYear().toString();
   var mm = (date.getMonth()+1).toString();
@@ -167,6 +192,11 @@ function convertDate(date) {
   return yyyy + '-' + (mmChars[1]?mm:"0"+mmChars[0]) + '-' + (ddChars[1]?dd:"0"+ddChars[0]);
 }
 
+/*
+* this function transfer a time to next format: HH:MM:SS
+  input: (Date) date,
+  return: (string) time of type "hh:mm:ss"
+*/
 function convertTime(date){
   var hh = date.getHours();
   var mm = date.getMinutes();

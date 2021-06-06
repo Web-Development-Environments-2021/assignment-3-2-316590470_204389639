@@ -4,7 +4,11 @@ const league_utils = require("./utils/league_utils");
 const teams_utils = require("./utils/teams_utils");
 const DButils = require("../routes/utils/DButils");
 
-// bonus - manage league page
+/*
+* this is a BONUS route for managing league,
+  if any includes added to route then error is thrown,
+  only user of user_type 1 is approved for such activity
+*/
 router.get('/manage', async (req, res, next) => {
   try{
     if( Object.keys(req.query).length > 0 ){
@@ -23,13 +27,19 @@ router.get('/manage', async (req, res, next) => {
     if (user.user_type == 0){
       throw { status: 401, message: "Unauthorized" };
     }
-    const all_legaue_games = await league_utils.getPastAndFutureGames(); // withdraw with getPastAndFutureGames from Guy.
+    // retrieves all league's games
+    const all_legaue_games = await league_utils.getPastAndFutureGames();
     res.status(200).send(all_legaue_games);
   } catch(error){
     next(error);
   }
 });
 
+/*
+* this is a BONUS route for adding a new game to league,
+  if any includes added to route then error is thrown,
+  only user of user_type 1 is approved for such activity
+*/
 router.post("/addGame", async (req, res, next) => {
   try {
     // valid permissions
@@ -41,27 +51,30 @@ router.post("/addGame", async (req, res, next) => {
         `SELECT * FROM users WHERE user_id = '${req.session.user_id}'`
       )
     )[0];
-
+    // if user connected has no permissions
     if (user.user_type == 0){
       throw { status: 401, message: "Unauthorized" };
     }
 
     // valid parameters
     const { date, time, home_team, away_team, field } = req.body;
+
+    if( !date || !time || !home_team || !away_team || !field)
+      throw { status: 400, message: "Invalid syntax"}
+
     if(!(typeof date === 'string' && typeof time === 'string' 
     && typeof home_team === 'number' && typeof away_team === 'number' 
     && typeof field === 'string') || !(Date.parse(date) && home_team >= 0 
     && away_team >= 0)){
       throw {status: 400, message: "Invalid syntax"};
     }
+    
     // if date is smaller or equal to today's AND time is smaller than now - throw 400
     if(date <= league_utils.convertDate(new Date()) && time < league_utils.convertTime(new Date())){
       throw { status: 400, message: "Invalid syntax"}
     }
-    if( !date || !time || !home_team || !away_team || !field)
-      throw { status: 400, message: "Invalid syntax"}
 
-    // check if teams exist in api's
+    // check if both teams exist in api's
     const home_team_exist = await teams_utils.getTeamNameById(home_team);
     const away_team_exist = await teams_utils.getTeamNameById(away_team);
     if(home_team_exist == 1 || away_team_exist == 1){
@@ -71,7 +84,7 @@ router.post("/addGame", async (req, res, next) => {
     let games_id = await DButils.execQuery(
       'SELECT * FROM games'
     );
-    games_id = games_id.length+1;
+    games_id = games_id.length+1; // next game_id for games_table
     
     // add the new game
     await DButils.execQuery(
@@ -85,11 +98,16 @@ router.post("/addGame", async (req, res, next) => {
   }
 });
 
+/*
+* this is part 9 from document, retrieves all details about current games = all games from db
+  if any includes added to route then error is thrown
+*/
 router.get('/current_games', async(req, res, next) => {
   try{
     if( Object.keys(req.query).length > 0 ){
       throw { status: 404, message: "could not find the requested url"};
     }
+    // getting all games from db
     const all_games = await league_utils.getPastAndFutureGames();
     res.status(200).send(all_games);
   }catch(error){

@@ -1,8 +1,10 @@
 var express = require("express");
 const players_utils = require("./utils/players_utils");
 var router = express.Router();
+
 /**
- * function return a detaild player information of a single player
+ * route returns a detailed player information of a single player
+ * if any includes added to route then error is thrown
  */
 router.get('/:playerId/ticketDetails', async (req, res, next) => {
     try{
@@ -14,6 +16,7 @@ router.get('/:playerId/ticketDetails', async (req, res, next) => {
             // get dtails of a single player
             var player_preview = await players_utils.getPlayersInfo([player_id]);
         } catch (error){
+            // if player_id does not exist
             throw { status: 404, message: "Could not find the requested url"};
         }
         // get the full details of the player from the API

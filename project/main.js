@@ -1,7 +1,4 @@
 //#region global imports
-
-// shiri commit
-
 const DButils = require("./routes/utils/DButils");
 const league_utils = require("./routes/utils/league_utils");
 const user_utils = require("./routes/utils/users_utils");
@@ -10,6 +7,7 @@ const axios = require("axios");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 //#endregion
+
 //#region express configures
 var express = require("express");
 var path = require("path");
@@ -80,19 +78,26 @@ app.use(function (req, res, next) {
 });
 //#endregion
 
-// getting home page
+/**
+ * this route gets home page of our league,
+ * if any includes added to route then error is thrown
+ */
 app.get('/', async (req, res, next) => {
   try{
     if( Object.keys(req.query).length > 0 ){
       throw { status: 404, message: "Could not find the requested url"};
     }
+    // get all league details
     const league_details = await league_utils.getLeagueDetails();
     let fav_games_details = null;
+
+    // if there is a connected user then get all his favorite games
     if (req.session && req.session.user_id){
       const user_id = req.session.user_id;
       fav_games_details = await user_utils.getFavoriteGames(user_id);
       let top_3_games = "no favorite games were found";
-      // if no games were found
+
+      // if there are saved games as favorites then get at most 3
       if(fav_games_details != null){
         const num_fav_games = Object.keys(fav_games_details).length;
         if(num_fav_games < 3)
@@ -102,7 +107,10 @@ app.get('/', async (req, res, next) => {
       }
       res.status(200).send([league_details,top_3_games]);
     }
-    else{res.status(200).send(league_details);}
+  
+    else{
+      // no connected user
+      res.status(200).send(league_details);}
   } catch (error){
     next(error);
   }
