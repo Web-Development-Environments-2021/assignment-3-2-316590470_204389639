@@ -81,6 +81,19 @@ router.post("/addGame", async (req, res, next) => {
       throw { status: 400, message: "Invalid syntax"}
     }
 
+    // if one of teams is playing the same date in another game
+    const team_valid_on_date = await DButils.execQuery(
+      `select * from games
+       where 
+       ((home_team = ${home_team} OR away_team = ${home_team}) AND date = ${date})
+       OR
+       ((home_team = ${away_team} OR away_team = ${away_team}) AND date = ${date}))
+      `
+      ) 
+    if(team_valid_on_date){
+      throw { status: 400, message: "Invalid syntax"}
+    }
+
     let games_id = await DButils.execQuery(
       'SELECT * FROM games'
     );
