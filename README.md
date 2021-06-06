@@ -1,6 +1,7 @@
 # Assignment-3-2-316590470-204389639
 
 - [Assignment-3-2-316590470-204389639](#assignment-3-2-316590470-204389639)
+  - [Database](#database)
   - [Navigator](#navigator)
   - [About](#about)
   - [Register](#register)
@@ -12,6 +13,12 @@
   - [CurrentGames](#currentgames)
   - [Favorites](#favorites)
   - [LeagueManagement](#leaguemanagement)
+
+## Database
+- api token: Mwml27usORk0jBxwNwFwUKTBYwBACAYNjqLWR48CgykCJlcAFzefB0n3GMjT
+- server name: shorlakserver.database.windows.net
+- username: shirit
+- password: Shorlakserver2021
 
 ## Navigator
 - Will be implemented in front-end.
