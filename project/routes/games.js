@@ -32,7 +32,9 @@ router.post('/addResult', async (req, res, next) => {
         const home_result = req.body.home_team_result;
         const away_result = req.body.away_team_result;
         // valid parameters
-        if(!(game_id && home_result && away_result) || (game_id<0 || home_result<0 || away_result<0)){
+        if(isNaN(game_id) || isNaN(home_result) || isNaN(away_result)
+         || !(typeof game_id === "number" && typeof home_result === "number" && typeof away_result === "number") ||
+          (game_id<0 || home_result<0 || away_result<0)){
           throw { status: 400, message: "Invalid syntax"};
         }
         const user = (
@@ -67,8 +69,10 @@ router.post('/addEvent', async (req, res, next) => {
       const event_minute = req.body.minute;
       const event_desc = req.body.description;
       // valid parameters
-      if(!(game_id && event_minute && event_desc && event_desc.player_id && event_desc.event_type) ||
-       (game_id < 0 || event_minute < 0)){
+      if(isNan(game_id) || isNan(event_minute) || isNan(event_desc) || isNan(event_desc.player_id)
+       || isNan(event_desc.event_type) || !(typeof game_id === "number" && typeof event_minute === "number"
+       && typeof event_desc.player_id === "number" && typeof event_desc.event_type === "string")
+       || (game_id < 0 || event_minute < 0 || event_desc.player_id < 0)){
         throw { status: 400, message: "Invalid syntax"};
       }
 
