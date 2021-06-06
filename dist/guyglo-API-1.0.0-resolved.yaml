@@ -141,8 +141,8 @@ paths:
         style: simple
         explode: false
         schema:
-          type: string
-          example: bayren munich
+          type: integer
+          example: 86
       responses:
         "200":
           description: Successfully pulled team details.
@@ -326,7 +326,7 @@ paths:
             description: Successfully pulled league games.
             content:
               application/json:
-                shcema:
+                schema:
                   $ref: '#/components/schemas/current_games'
           "401":
             description: Unauthorized.
