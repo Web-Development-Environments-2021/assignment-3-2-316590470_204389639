@@ -12,9 +12,6 @@ router.get('/:playerId/ticketDetails', async (req, res, next) => {
             throw { status: 404, message: "could not find the requested url"};
         }
         const player_id = req.params.playerId;
-        if( !(typeof player_id === "number")){
-            throw { status: 400, message: "Invalid syntax"};
-        }
         try{
             // get dtails of a single player
             var player_preview = await players_utils.getPlayersInfo([player_id]);

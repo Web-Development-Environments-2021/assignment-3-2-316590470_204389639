@@ -71,11 +71,11 @@ async function getLeagueDetails() {
 
   // find next closest game
   let tdate = convertDate(new Date());
-  const next_game = (
-    
+  const current_time = convertTime(new Date());
+  const next_game = (   
     await DButils.execQuery(
       `SELECT TOP 1 game_id, date, time, home_team, away_team, field FROM games
-       WHERE date >= '${tdate}'
+       WHERE (date > '${tdate}') or (date = '${tdate}' and time >= '${current_time}')
        ORDER BY date ASC, time ASC`
     )
   )[0];

@@ -68,9 +68,10 @@ router.post('/addEvent', async (req, res, next) => {
       const game_id = req.body.game_id;
       const event_minute = req.body.minute;
       const event_desc = req.body.description;
+
       // valid parameters
-      if(isNan(game_id) || isNan(event_minute) || isNan(event_desc) || isNan(event_desc.player_id)
-       || isNan(event_desc.event_type) || !(typeof game_id === "number" && typeof event_minute === "number"
+      if(isNaN(game_id) || isNaN(event_minute) || !(event_desc) || isNaN(event_desc.player_id)
+       || !(event_desc.event_type) || !(typeof game_id === "number" && typeof event_minute === "number"
        && typeof event_desc.player_id === "number" && typeof event_desc.event_type === "string")
        || (game_id < 0 || event_minute < 0 || event_desc.player_id < 0)){
         throw { status: 400, message: "Invalid syntax"};
