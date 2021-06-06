@@ -5,6 +5,23 @@ const teams_utils = require("./teams_utils");
 const games = require("./games_utils");
 const LEAGUE_ID = 271;
 
+async function getCurrentSeason(){
+  try{
+    const league = await axios.get(
+      `https://soccer.sportmonks.com/api/v2.0/leagues/${LEAGUE_ID}`,
+      {
+        params: {
+          api_token: process.env.api_token,
+        },
+      }
+    );
+    var current_season_id = league.data.data.current_season_id;
+    return current_season_id;
+  } catch(error){
+    return 1;
+  }
+}
+
 async function getLeagueDetails() {
   try{
     const league = await axios.get(
@@ -163,3 +180,4 @@ exports.getLeagueDetails = getLeagueDetails;
 exports.convertDate = convertDate;
 exports.convertTime = convertTime;
 exports.getPastAndFutureGames = getPastAndFutureGames;
+exports.getCurrentSeason = getCurrentSeason;

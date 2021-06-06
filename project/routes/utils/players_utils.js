@@ -1,7 +1,7 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const DButils = require('./DButils');
-const season_id = 17328;
+const league_utils = require("./league_utils");
 
 /**function returns ids about a team's players
  * input:
@@ -128,7 +128,7 @@ async function getPlayersByTeam(team_id) {
 }
 
 async function getAllLeaguePlayers(season_id){
-
+  
   let all_teams_full_details = await axios.get(`https://soccer.sportmonks.com/api/v2.0/teams/season/${season_id}?include=squad.player`,{
       params: {   
         api_token: process.env.api_token,
@@ -200,7 +200,8 @@ async function search(req){
  
   let player_name = req.query.name;
   let player_team = req.query.team_name;
-  let player_position = req.query.position;      
+  let player_position = req.query.position;
+  let season_id = await  league_utils.getCurrentSeason();     
   let playerList = await getAllLeaguePlayers(season_id);
   
   if(player_position || player_name || player_team){

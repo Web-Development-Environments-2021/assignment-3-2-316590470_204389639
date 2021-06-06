@@ -3,7 +3,6 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const DButils = require("./DButils");
 const league =  require("./league_utils");
 const games = require("./games_utils");
-const season_Id = 17328 ;
 
 /**this function returns info for a given list of teams
  * input:
@@ -151,6 +150,7 @@ function extractPreviewForSearch(teams_list){
  * return: ([JSON]) An array of team_preview object of the league's teams
 */
 async function getAllLeagueTeams(){   
+   let season_Id = await league.getCurrentSeason();
    let all_teams_full_details = await axios.get(`https://soccer.sportmonks.com/api/v2.0/teams/season/${season_Id}`,{
       params: {
          api_token: process.env.api_token,

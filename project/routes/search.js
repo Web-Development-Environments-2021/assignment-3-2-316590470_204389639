@@ -3,7 +3,7 @@ const axios = require("axios");
 const players_utils = require("./utils/players_utils");
 const teams_utils = require("./utils/teams_utils");
 const DBUtils = require("./utils/DButils");
-const { Router } = require("express");
+const league_utils = require("./utils/league_utils");
 var router = express.Router();
 const season_id = 17328;
 /**
@@ -107,15 +107,15 @@ router.get('/', async(req, res, next) => {
          }
       }
       // default when no paramater or prev searches
-      else {
-         let teams = await teams_utils.getAllLeagueTeams();
-         let players = await players_utils.getAllLeaguePlayers(season_id);
+      let teams = await teams_utils.getAllLeagueTeams();
+      let season_id = await  league_utils.getCurrentSeason();  
+      let players = await players_utils.getAllLeaguePlayers(season_id);
 
       info = {
          teams: teams,
          players: players,
       }
-      res.status(200).send(info);}
+      res.status(200).send(info);
    }
    catch(error){
       next(error);
