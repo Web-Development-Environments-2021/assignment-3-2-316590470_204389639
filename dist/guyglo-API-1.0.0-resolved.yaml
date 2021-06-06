@@ -124,6 +124,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/player_response'
+        "400":
+          description: Invalid syntax.
         "404":
           description: Bad Request. Could not find the requested URL.
   
@@ -150,6 +152,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/team_response'
+        "400":
+          description: Invalid syntax.
         "404":
           description: Bad Request. Could not find the requested URL.
   

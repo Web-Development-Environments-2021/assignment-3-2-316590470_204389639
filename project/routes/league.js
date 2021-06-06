@@ -59,7 +59,7 @@ router.post("/addGame", async (req, res, next) => {
     // valid parameters
     const { date, time, home_team, away_team, field } = req.body;
 
-    if( !date || !time || !home_team || !away_team || !field)
+    if( !date || !time || !field || isNaN(home_team) || isNaN(away_team))
       throw { status: 400, message: "Invalid syntax"}
 
     if(!(typeof date === 'string' && typeof time === 'string' 

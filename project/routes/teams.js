@@ -15,6 +15,9 @@ router.get("/:teamId/ticketDetails", async (req, res, next) => {
     if( Object.keys(req.query).length > 0 ){
       throw { status: 404, message: "Could not find the requested url"};
     }
+    if(!(typeof teamId === "number")){
+      throw { status: 400, message: "Invalid syntax"};
+    }
     let team_preview= await teams_utils.getTeamsInfo([req.params.teamId]);
     if( team_preview == 1){
       // if team id does not exist

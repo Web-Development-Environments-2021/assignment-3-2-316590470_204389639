@@ -31,7 +31,7 @@ router.post("/favoritePlayers", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
     const player_id = req.body.id;
-    if( !player_id || !(typeof player_id === 'number') || player_id < 0 || 
+    if( isNaN(player_id) || !(typeof player_id === 'number') || player_id < 0 || 
       (await players_utils.playerExists(player_id))==1){
       throw { status: 400, message: "Invalid syntax"};
     }
@@ -75,7 +75,7 @@ router.post("/favoriteTeams", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
     const team_id = req.body.id;
-    if( !team_id || !(typeof team_id === 'number') || team_id < 0 || 
+    if( isNaN(team_id) || !(typeof team_id === 'number') || team_id < 0 || 
       (await teams_utils.getTeamNameById(team_id))==1){
       throw { status: 400, message: "Invalid syntax"};
     }
@@ -119,7 +119,7 @@ router.post("/favoriteGames", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
     const game_id = req.body.id;
-    if( !game_id || !(typeof game_id === 'number') || game_id < 0 || 
+    if( isNaN(game_id) || !(typeof game_id === 'number') || game_id < 0 || 
       (await games_utils.gameExists(game_id))==1){
       throw { status: 400, message: "Invalid syntax"};
     }
