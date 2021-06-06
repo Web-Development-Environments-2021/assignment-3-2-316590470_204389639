@@ -104,7 +104,9 @@ async function gameHasFinishedAlready(game_id){
     if(game.home_goal != null || game.away_goal != null){
       return 1;
     }
-    if(game.date != league_utils.convertDate(new Date())){
+    
+    if(league_utils.convertDate(game.date) != league_utils.convertDate(new Date())){
+      
       return 3;
     }
     return 0;
