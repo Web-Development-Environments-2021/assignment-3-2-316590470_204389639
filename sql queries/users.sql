@@ -43,4 +43,4 @@
 -- alter table users
 -- add email varchar(255);
 -- select * from fav_games
--- select * from games
+delete from users where user_id = 3

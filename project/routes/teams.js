@@ -41,5 +41,4 @@ router.get("/:teamId/ticketDetails", async (req, res, next) => {
   }
 });
 
-
 module.exports = router;

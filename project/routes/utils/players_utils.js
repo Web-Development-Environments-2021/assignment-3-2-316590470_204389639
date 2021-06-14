@@ -108,7 +108,7 @@ function extractRelevantPlayerDataByName(players_info) {
 */
 function extractRelevantPlayerData(players_info) {
   return players_info.map((player_info) => {
-    const { fullname, image_path, position_id } = player_info.data.data;
+    const { id,fullname, image_path, position_id } = player_info.data.data;
     const { name } = player_info.data.data.team.data;
     return {
       name: fullname,

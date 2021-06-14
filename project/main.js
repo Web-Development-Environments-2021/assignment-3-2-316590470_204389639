@@ -110,7 +110,7 @@ app.get('/', async (req, res, next) => {
   
     else{
       // no connected user
-      res.status(200).send(league_details);}
+      res.status(200).send([league_details]);}
   } catch (error){
     next(error);
   }

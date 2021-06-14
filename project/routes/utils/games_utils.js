@@ -11,7 +11,7 @@ async function getGamesInfo(game_ids_list){
   
   const current_date = league_utils.convertDate(new Date());
   let games_with_ids = await DButils.execQuery(
-    `SELECT date, time, home_team, away_team, field FROM games
+    `SELECT game_id, date, time, home_team, away_team, field FROM games
     WHERE game_id in (${game_ids_list.toString()})
     AND (date >= '${current_date}'  
     AND home_goal is NULL AND away_goal is NULL)
@@ -22,6 +22,7 @@ async function getGamesInfo(game_ids_list){
     const home_team_name = await teams_utils.getTeamNameById(game.home_team);
     const away_team_name = await teams_utils.getTeamNameById(game.away_team);
     return {
+      game_id: game.game_id,
       date: game.date,
       time: game.time,
       home_team: home_team_name.name,
@@ -42,6 +43,7 @@ function extractRelevantGameData(games_info) {
     return games_info.map((game_info) => {
       
       return {
+        game_id: game_info.game_id,
         date: game_info.date,
         time: game_info.time,
         home_team: game_info.home_team,

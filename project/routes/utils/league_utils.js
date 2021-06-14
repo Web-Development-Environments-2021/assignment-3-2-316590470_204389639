@@ -96,6 +96,7 @@ async function getLeagueDetails() {
     current_season_name: current_season_name,
     current_stage_name: current_stage_name,
     // next game details should come from DB
+    next_game_details_id: next_game_details.game_id,
     next_game_details_date: next_game_details.date,
     next_game_details_time: next_game_details.time,
     next_game_details_home_team: next_game_details.home_team,
@@ -139,13 +140,14 @@ async function getPastAndFutureGames(){
      game.events = game_events;
      
     
-     //remove the game_id field since it is not compatible with our API
-     delete game.game_id;
+    //  //remove the game_id field since it is not compatible with our API
+    //  delete game.game_id;
      return game;
   });
   let past_games_promise = await Promise.all(games_with_events);
   past_games_promise.map((game)=>{
      return{
+        game_id: game.game_id,
         date: game.Date,
         time: game.time,
         home_team: game.home_team,
@@ -165,7 +167,7 @@ async function getPastAndFutureGames(){
      game.home_team = home_team_name.name;
      game.away_team = away_team_name.name;
      
-     delete game.game_id;
+    //  delete game.game_id;
   });
   let future_games_promise = await Promise.all(future_games);
   // getting all games' by teams' names.
