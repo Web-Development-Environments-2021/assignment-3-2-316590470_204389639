@@ -102,11 +102,11 @@ router.get('/', async(req, res, next) => {
          }
       }
       // check if sessio exists and has a previous search
-      else if(session){
-         if (session.last_search){
-            res.status(200).send(session.last_search);
-         }
-      }
+      // else if(session){
+      //    if (session.last_search){
+      //       res.status(200).send(session.last_search);
+      //    }
+      // }
       // default when no paramater or prev searches
       let teams = await teams_utils.getAllLeagueTeams();
       let season_id = await  league_utils.getCurrentSeason();  

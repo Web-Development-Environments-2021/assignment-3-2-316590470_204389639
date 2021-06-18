@@ -1,6 +1,7 @@
 const DButils = require("./DButils");
 const teams_utils = require("./teams_utils");
 const league_utils = require("./league_utils");
+const players_utils = require("./players_utils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 /*
@@ -18,18 +19,22 @@ async function getGamesInfo(game_ids_list){
     ORDER BY date ASC, time ASC`
   )
   
-  let games_with_names = games_with_ids.map( async (game)=>{
+  let games_with_names = [];
+  for(let i =0; i< games_with_ids.length; i++){
+    const game = games_with_ids[i];
     const home_team_name = await teams_utils.getTeamNameById(game.home_team);
     const away_team_name = await teams_utils.getTeamNameById(game.away_team);
-    return {
+    games_with_names.push({
       game_id: game.game_id,
       date: game.date,
       time: game.time,
       home_team: home_team_name.name,
+      home_team_logo: home_team_name.logo,
       away_team: away_team_name.name,
+      away_team_logo: away_team_name.logo,
       field: game.field,
-    };
-  })
+    });
+  };
   let games = await Promise.all(games_with_names);
   return extractRelevantGameData(games);
 }
@@ -44,11 +49,13 @@ function extractRelevantGameData(games_info) {
       
       return {
         game_id: game_info.game_id,
-        date: game_info.date,
-        time: game_info.time,
+        date: league_utils.convertDate(game_info.date),
+        time: league_utils.convertTime(game_info.time),
         home_team: game_info.home_team,
         away_team: game_info.away_team,
         field: game_info.field,
+        home_team_logo: game_info.home_team_logo,
+        away_team_logo: game_info.away_team_logo,
       };
     });
   }
@@ -66,10 +73,10 @@ async function getGameEvents(GID){
   return eventList.map((event)=>{
     return{
       date: event.date,
-      time:event.time,
+      time: event.time,
       minute: event.minute,
       eventType: event.event_type,
-      player: event.player
+      player: (await players_utils.getPlayersInfo([event.player])).name,
     };
     
   });

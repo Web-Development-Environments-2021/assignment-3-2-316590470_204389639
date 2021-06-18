@@ -108,13 +108,15 @@ function extractRelevantPlayerDataByName(players_info) {
 */
 function extractRelevantPlayerData(players_info) {
   return players_info.map((player_info) => {
-    const { id,fullname, image_path, position_id } = player_info.data.data;
-    const { name } = player_info.data.data.team.data;
+    const { player_id,fullname, image_path, position_id } = player_info.data.data;
+    const { name, logo_path } = player_info.data.data.team.data;
     return {
+      id: player_id,
       name: fullname,
       image: image_path,
       position: position_id,
       team_name: name,
+      team_logo: logo_path
     };
   });
 }
@@ -166,6 +168,7 @@ async function getAllLeaguePlayers(season_id){
       let teamName = team.name;
       let player_info = (team.squad.data.map(async(player)=>{
         list_toRet.push( {
+            id: player.player.data.player_id,
             fullname:player.player.data.fullname,
             picture: player.player.data.image_path,
             position: player.player.data.position_id,

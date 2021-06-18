@@ -101,6 +101,8 @@ async function getLeagueDetails() {
     next_game_details_time: next_game_details.time,
     next_game_details_home_team: next_game_details.home_team,
     next_game_details_away_team: next_game_details.away_team,
+    next_game_home_logo: next_game_details.home_team_logo,
+    next_game_away_logo: next_game_details.away_team_logo,
     next_game_details_field: next_game_details.field, 
   };
   return temp;
@@ -126,50 +128,20 @@ async function getPastAndFutureGames(){
   
   
   // change the numeric team_id to the formal team name for both home and away teams
-  let games_with_events = past_games.map(async(game)=>{
-     home_id = game.home_team;
-     home_team_name = await teams_utils.getTeamNameById(home_id);
-     away_id = game.away_team;
-     away_team_name = await teams_utils.getTeamNameById(away_id);
-     game.home_team = home_team_name.name;
-     game.away_team = away_team_name.name;
-     
-     //retrieve all game events
-     game_id = game.game_id
-     game_events = await games.getGameEvents(game_id)
-     game.events = game_events;
-     
-    
-    //  //remove the game_id field since it is not compatible with our API
-    //  delete game.game_id;
-     return game;
-  });
+  games_with_events = [];
+    for(let i =0; i< past_games.length;i++){
+        const details = await teams_utils.getGameDetails(past_games[i]);
+        games_with_events.push(details);
+    }
   let past_games_promise = await Promise.all(games_with_events);
-  past_games_promise.map((game)=>{
-     return{
-        game_id: game.game_id,
-        date: game.Date,
-        time: game.time,
-        home_team: game.home_team,
-        away_team: game.away_team,
-        field: game.field,
-        home_goal: game.home_goal,
-        away_goal: game.away_goal,
-        event: game.events,
-     }
-  })
 
-  future_games.map(async(game)=>{
-     home_id = game.home_team;
-     home_team_name = await teams_utils.getTeamNameById(home_id);
-     away_id = game.away_team;
-     away_team_name = await teams_utils.getTeamNameById(away_id);
-     game.home_team = home_team_name.name;
-     game.away_team = away_team_name.name;
-     
-    //  delete game.game_id;
-  });
-  let future_games_promise = await Promise.all(future_games);
+  future_games_final = [];
+  for(let i =0; i< future_games.length;i++){
+      const details = await teams_utils.getFutureGameDetails(future_games[i]);
+      future_games_final.push(details);
+  }
+  future_games_promise = await Promise.all(future_games_final);
+
   // getting all games' by teams' names.
   let all_games = {
   past_games: past_games_promise,

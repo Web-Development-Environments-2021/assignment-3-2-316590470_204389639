@@ -45,6 +45,7 @@ async function getTeamNameById(team_id){
         );
         return{
             name: team.data.data.name,
+            logo: team.data.data.logo_path,
         }
     }catch(error){
         return 1;
@@ -74,55 +75,27 @@ async function getPastAndFutureGames(team_id){
    
    
    // change the numeric team_id to the formal team name for both home and away teams
-   let games_with_events = past_games.map(async(game)=>{
-      home_id = game.home_team;
-      home_team_name = await getTeamNameById(home_id);
-      away_id = game.away_team;
-      away_team_name = await getTeamNameById(away_id);
-      game.home_team = home_team_name.name;
-      game.away_team = away_team_name.name;
-      
-      //retrieve all game events
-      game_id = game.game_id
-      game_events = await games.getGameEvents(game_id)
-      game.events = game_events;
-      
-     
-      //remove the game_id field since it is not compatible with our API
-      delete game.game_id;
-      return game;
-   });
-   let past_games_promise = await Promise.all(games_with_events);
-   past_games_promise.map((game)=>{
-      return{
-         date: game.Date,
-         time: game.time,
-         home_team: game.home_team,
-         away_team: game.away_team,
-         field: game.field,
-         home_goal: game.home_goal,
-         away_goal: game.away_goal,
-         event: game.events,
-      }
-   })
+//    let games_with_events = past_games.map(async (game)=>{
+    games_with_events = [];
+    for(let i =0; i< past_games.length;i++){
+        const details = await getGameDetails(past_games[i]);
+        games_with_events.push(details);
+    }
+    let past_games_promise = await Promise.all(games_with_events);
 
-   future_games.map(async(game)=>{
-      home_id = game.home_team;
-      home_team_name = await getTeamNameById(home_id);
-      away_id = game.away_team;
-      away_team_name = await getTeamNameById(away_id);
-      game.home_team = home_team_name.name;
-      game.away_team = away_team_name.name;
-      
-      delete game.game_id;
-   });
-   future_games_promise = await Promise.all(future_games);
-   // getting all games' by teams' names.
-   let all_games = {
-   past_games: past_games_promise,
-   future_games:future_games
-   }
-   return all_games;
+    future_games_final = [];
+    for(let i =0; i< future_games.length;i++){
+        const details = await getFutureGameDetails(future_games[i]);
+        future_games_final.push(details);
+    }
+    future_games_promise = await Promise.all(future_games_final);
+
+    // getting all games' by teams' names.
+    let all_games = {
+    past_games: past_games_promise,
+    future_games:future_games_promise
+    }
+    return all_games;
 }
 
 /*
@@ -192,9 +165,39 @@ async function search(req){
 
 }
 
+async function getGameDetails(game){
+    home_team_name = await getTeamNameById(game.home_team);
+    away_team_name = await getTeamNameById(game.away_team);
+    game_events = await games.getGameEvents(game.game_id);
+    return {
+        date: league.convertDate(game.date),
+        time: league.convertTime(game.time),
+        home_team: home_team_name.name,
+        away_team: away_team_name.name,
+        field: game.field,
+        home_goal: game.home_goal,
+        away_goal: game.away_goal,
+        events: game_events,
+    };
+}
+
+async function getFutureGameDetails(game){
+    home_team_name = await getTeamNameById(game.home_team);
+    away_team_name = await getTeamNameById(game.away_team);
+    return{
+        date: league.convertDate(game.date),
+        time: league.convertTime(game.time),
+        home_team: home_team_name.name,
+        away_team: away_team_name.name,
+        field: game.field,
+    }
+}
+
 exports.search = search;
 exports.getTeamsInfo = getTeamsInfo;
 exports.extractPreviewForSearch = extractPreviewForSearch;
 exports.getTeamNameById = getTeamNameById;
 exports.getPastAndFutureGames = getPastAndFutureGames;
 exports.getAllLeagueTeams = getAllLeagueTeams;
+exports.getGameDetails = getGameDetails;
+exports.getFutureGameDetails = getFutureGameDetails;
