@@ -184,7 +184,9 @@ async function getGameDetails(game){
 async function getFutureGameDetails(game){
     home_team_name = await getTeamNameById(game.home_team);
     away_team_name = await getTeamNameById(game.away_team);
+    
     return{
+        game_id: game.game_id,
         date: league.convertDate(game.date),
         time: league.convertTime(game.time),
         home_team: home_team_name.name,

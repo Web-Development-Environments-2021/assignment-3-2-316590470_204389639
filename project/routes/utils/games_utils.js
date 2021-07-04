@@ -5,7 +5,7 @@ const players_utils = require("./players_utils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 /*
-* returns *not occured* yet games according to gamePreview:
+* returns not occured yet games according to gamePreview:
   date, time, home team, away team and field.
 */
 async function getGamesInfo(game_ids_list){
@@ -70,17 +70,18 @@ async function getGameEvents(GID){
     `select * from events where GID = ${GID}`
     );
   let promise =await Promise.all(eventList)
-  return eventList.map((event)=>{
-    return{
+  let events = [];
+  for(let i=0; i< eventList.length; i++){
+    const event = eventList[i];
+    events.push({
       date: event.date,
       time: event.time,
       minute: event.minute,
       eventType: event.event_type,
       player: (await players_utils.getPlayersInfo([event.player])).name,
-    };
-    
-  });
-  
+    })
+  }
+  return events;
 }
 
 /*

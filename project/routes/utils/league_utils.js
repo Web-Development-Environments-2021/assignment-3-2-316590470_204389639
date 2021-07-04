@@ -113,7 +113,7 @@ async function getLeagueDetails() {
   input: none,
   return: two json objects, one for past games and second for future games according to api scehmas
 */
-async function getPastAndFutureGames(){
+async function getPastAndFutureGames(req){
   //retriving all relevant games from the DB if existing
   let tdate = convertDate(new Date())
   let past_games = await DButils.execQuery(
@@ -126,7 +126,11 @@ async function getPastAndFutureGames(){
       where (date >= '${tdate}' and home_goal is NULL and away_goal is NULL) 
       order by date ASC , time ASC`);
   
-  
+  let favorite_games =   await DButils.execQuery(
+        `select game_id from fav_games 
+        where user_id  =  '${req.session.user_id}'`
+    );
+
   // change the numeric team_id to the formal team name for both home and away teams
   games_with_events = [];
     for(let i =0; i< past_games.length;i++){
@@ -140,8 +144,16 @@ async function getPastAndFutureGames(){
       const details = await teams_utils.getFutureGameDetails(future_games[i]);
       future_games_final.push(details);
   }
-  future_games_promise = await Promise.all(future_games_final);
+  let future_games_promise = await Promise.all(future_games_final);
 
+  for(let i =0; i< future_games_promise.length;i++) {
+    if( favorite_games.some(item => item.game_id === future_games_promise[i].game_id)){
+    // if (favorite_games.has({game_id:future_games_promise[i].game_id})){
+      future_games_promise[i].favorite = true;
+    }else{
+      future_games_promise[i].favorite = false;
+    }
+  };
   // getting all games' by teams' names.
   let all_games = {
   past_games: past_games_promise,

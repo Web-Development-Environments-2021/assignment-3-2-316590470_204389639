@@ -121,7 +121,7 @@ router.get('/current_games', async(req, res, next) => {
       throw { status: 404, message: "could not find the requested url"};
     }
     // getting all games from db
-    const all_games = await league_utils.getPastAndFutureGames();
+    const all_games = await league_utils.getPastAndFutureGames(req);
     res.status(200).send(all_games);
   }catch(error){
     next(error);
