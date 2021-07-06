@@ -156,4 +156,19 @@ router.post("/favoriteGames", async (req, res, next) => {
   }
 });
 
+
+// needed? 
+router.get("/type", async(req, res, next) => {
+  try{
+    if(Object.keys(req.query).length > 0){
+      throw {status: 404, message:"Could not find the requested url"}
+    }
+    const user_id =req.session.user_id;
+    const user = await users_utils.getUser(user_id);
+    res.status(200).send(user);
+  } catch(error){
+    next(error);
+  }
+});
+
 module.exports = router;
