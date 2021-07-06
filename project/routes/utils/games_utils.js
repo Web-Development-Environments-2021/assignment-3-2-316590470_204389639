@@ -70,17 +70,18 @@ async function getGameEvents(GID){
     `select * from events where GID = ${GID}`
     );
   let promise =await Promise.all(eventList)
-  return eventList.map((event)=>{
-    return{
+  let events = [];
+  for(let i=0; i< eventList.length; i++){
+    const event = eventList[i];
+    events.push({
       date: event.date,
       time: event.time,
       minute: event.minute,
       eventType: event.event_type,
       player: (await players_utils.getPlayersInfo([event.player])).name,
-    };
-    
-  });
-  
+    })
+  }
+  return events;
 }
 
 /*
