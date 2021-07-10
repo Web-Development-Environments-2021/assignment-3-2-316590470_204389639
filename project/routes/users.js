@@ -157,7 +157,7 @@ router.post("/favoriteGames", async (req, res, next) => {
 });
 
 
-// needed? 
+// needed? yes
 router.get("/type", async(req, res, next) => {
   try{
     if(Object.keys(req.query).length > 0){

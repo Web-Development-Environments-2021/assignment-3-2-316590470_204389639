@@ -125,11 +125,15 @@ async function getPastAndFutureGames(req){
      `select game_id,date, time, home_team, away_team, field from games 
       where (date >= '${tdate}' and home_goal is NULL and away_goal is NULL) 
       order by date ASC , time ASC`);
-  
-  let favorite_games =   await DButils.execQuery(
-        `select game_id from fav_games 
-        where user_id  =  '${req.session.user_id}'`
+  // if there is a user logged in' need to get his favorites
+  let favorite_games = null;
+  if(req.session && req.session.user_id){
+    favorite_games =   await DButils.execQuery(
+      `select game_id from fav_games 
+      where user_id  =  '${req.session.user_id}'`
     );
+  }
+  
 
   // change the numeric team_id to the formal team name for both home and away teams
   games_with_events = [];
@@ -146,14 +150,17 @@ async function getPastAndFutureGames(req){
   }
   let future_games_promise = await Promise.all(future_games_final);
 
-  for(let i =0; i< future_games_promise.length;i++) {
-    if( favorite_games.some(item => item.game_id === future_games_promise[i].game_id)){
-    // if (favorite_games.has({game_id:future_games_promise[i].game_id})){
-      future_games_promise[i].favorite = true;
-    }else{
-      future_games_promise[i].favorite = false;
-    }
-  };
+  if(favorite_games){
+    for(let i =0; i< future_games_promise.length;i++) {
+      if( favorite_games.some(item => item.game_id === future_games_promise[i].game_id)){
+      // if (favorite_games.has({game_id:future_games_promise[i].game_id})){
+        future_games_promise[i].favorite = true;
+      }else{
+        future_games_promise[i].favorite = false;
+      }
+    };
+  }
+  
   // getting all games' by teams' names.
   let all_games = {
   past_games: past_games_promise,

@@ -1,6 +1,7 @@
 ---
 openapi: 3.0.0
 info:
+
   title: Simple Inventory API
   description: This is a simple API
   contact:
@@ -9,6 +10,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
+
 tags:
 - name: default
   description: general perpous pages
@@ -24,6 +26,7 @@ tags:
   description: requests relating team information that dont require being logged in
 - name: league
   description: requests relating league that dont require being logged in
+
 paths:
   /:
     get:
@@ -268,6 +271,23 @@ paths:
     security:
       - cookieAuth: []
 
+  /users/type:
+    get:
+    taggs:
+    - user
+    parameters: []
+    responses:
+      "200":
+        description: sucssess
+        content:
+          aplication/json:
+              schema:
+                type: object
+                properties:
+                  user_type:
+                    type: integer
+                    example: 1
+
   /league/addGame:
     post:
       tags:
@@ -372,6 +392,36 @@ paths:
       security:
       - cookieAuth: []
 
+  /games/addEvent:
+    post:
+      tags:
+      - games
+      description: add events to not-finished game.
+      required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                game_id:
+                  type: integer
+                  example: 85
+                minute:
+                  type: integer
+                  example: 43
+                description:
+                  $ref: '#/components/schemas/event_description' 
+      responses:
+        "201":
+          description: Successfully added game's event.
+        "400":
+          description: Invalid syntax/Bad request.
+        "401":
+          description: Unauthorized, you have no permissions.
+      security:
+      - cookieAuth: []
+
   /search:
     get:
       tags:
@@ -398,7 +448,6 @@ paths:
           description: No content.
         "404":
           description: Could not found the requested url.
-
 
   /search/teams:
     get:
@@ -472,36 +521,6 @@ paths:
           "404":
             description: Could not found the requested url.
 
-  /games/addEvent:
-    post:
-      tags:
-      - games
-      description: add events to not-finished game.
-      required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                game_id:
-                  type: integer
-                  example: 85
-                minute:
-                  type: integer
-                  example: 43
-                description:
-                  $ref: '#/components/schemas/event_description' 
-      responses:
-        "201":
-          description: Successfully added game's event.
-        "400":
-          description: Invalid syntax/Bad request.
-        "401":
-          description: Unauthorized, you have no permissions.
-      security:
-      - cookieAuth: []
-
 components:
   schemas:
     securitySchemes:
@@ -546,6 +565,9 @@ components:
         weight:
           type: string
           example: 90 kg
+        favorite:
+        type: boolean
+        example: true
       description: full information about player.
     
     leagueInfo:
@@ -781,7 +803,10 @@ components:
     
     teamFull:
       type: object
-      properties:       
+      properties:  
+        favorite:
+          type: boolean
+          example: true     
         players:
           type: array
           items:

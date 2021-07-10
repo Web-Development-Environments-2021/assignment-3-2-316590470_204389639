@@ -28,7 +28,7 @@ router.get('/manage', async (req, res, next) => {
       throw { status: 401, message: "Unauthorized" };
     }
     // retrieves all league's games
-    const all_legaue_games = await league_utils.getPastAndFutureGames();
+    const all_legaue_games = await league_utils.getPastAndFutureGames(req);
     res.status(200).send(all_legaue_games);
   } catch(error){
     next(error);
@@ -90,7 +90,7 @@ router.post("/addGame", async (req, res, next) => {
        ((home_team = ${away_team} OR away_team = ${away_team}) AND date = '${date}');
       `
       ) 
-    if(team_valid_on_date){
+    if(team_valid_on_date.length >0){
       throw { status: 400, message: "Invalid syntax"}
     }
 

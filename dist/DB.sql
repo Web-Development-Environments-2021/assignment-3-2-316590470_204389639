@@ -1,6 +1,6 @@
 
 
-select * from games 
+select * from fav_teams 
 
 -- ALTER TABLE events
 -- DROP COLUMN description ;

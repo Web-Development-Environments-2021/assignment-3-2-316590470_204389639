@@ -20,6 +20,22 @@ router.get("/:teamId/ticketDetails", async (req, res, next) => {
       // if team id does not exist
       throw {status: 404, message: "Could not find the requested url"};
     }
+
+    //check if team is a user favorite
+    let isFavorite = false;
+    if(req.session && req.session.user_id){
+      let dbResult = await DButils.execQuery(
+        `select * from fav_teams
+        where user_id = ${req.session.user_id} 
+        and team_id = ${req.params.teamId} `
+      );
+      if(dbResult.length > 0){
+        isFavorite = true;
+      }else{
+        isFavorite = false;
+      }
+    }
+    
     // getting all games of which team id participates in 
     let all_games = await teams_utils.getPastAndFutureGames(req.params.teamId);
     
@@ -27,9 +43,11 @@ router.get("/:teamId/ticketDetails", async (req, res, next) => {
     const team_details = await players_utils.getPlayersByTeam(
       req.params.teamId
     );
+
     var toRet = {
       teamPreview: team_preview[0],
       teamFull:{
+        favorite: isFavorite,
         players: team_details,
         games: all_games,
       }
