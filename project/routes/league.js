@@ -90,7 +90,7 @@ router.post("/addGame", async (req, res, next) => {
        ((home_team = ${away_team} OR away_team = ${away_team}) AND date = '${date}');
       `
       ) 
-    if(team_valid_on_date){
+    if(team_valid_on_date.length >0){
       throw { status: 400, message: "Invalid syntax"}
     }
 
