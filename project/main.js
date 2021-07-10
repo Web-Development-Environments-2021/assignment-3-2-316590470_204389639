@@ -88,7 +88,7 @@ app.get('/', async (req, res, next) => {
       throw { status: 404, message: "Could not find the requested url"};
     }
     // get all league details
-    const league_details = await league_utils.getLeagueDetails();
+    const league_details = await league_utils.getLeagueDetails(req);
     let fav_games_details = null;
 
     // if there is a connected user then get all his favorite games

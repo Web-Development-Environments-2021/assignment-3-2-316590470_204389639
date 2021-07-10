@@ -37,7 +37,7 @@ async function getCurrentSeason(){
     next game details
   }
 */
-async function getLeagueDetails() {
+async function getLeagueDetails(req) {
   try{
     const league = await axios.get(
       `https://soccer.sportmonks.com/api/v2.0/leagues/${LEAGUE_ID}`,
@@ -90,6 +90,16 @@ async function getLeagueDetails() {
     }
   }
   const next_game_details = (await games_utils.getGamesInfo([next_game.game_id]))[0];
+  let checkFavorite = false;
+  if(req.session && req.session.user_id){
+    const res = await DButils.execQuery(`
+      select * from fav_games
+      where user_id = ${req.session.user_id}
+      and game_id = ${next_game_details.game_id}`);
+    if(res.length > 0 ){
+      checkFavorite = true;
+    }
+  }
 
   const temp = {
     league_name: league_name,
@@ -104,6 +114,7 @@ async function getLeagueDetails() {
     next_game_home_logo: next_game_details.home_team_logo,
     next_game_away_logo: next_game_details.away_team_logo,
     next_game_details_field: next_game_details.field, 
+    next_game_favorite: checkFavorite,
   };
   return temp;
 }
@@ -125,11 +136,10 @@ async function getPastAndFutureGames(req){
      `select game_id,date, time, home_team, away_team, field from games 
       where (date >= '${tdate}' and home_goal is NULL and away_goal is NULL) 
       order by date ASC , time ASC`);
-  
   let favorite_games =   await DButils.execQuery(
-        `select game_id from fav_games 
-        where user_id  =  '${req.session.user_id}'`
-    );
+      `select game_id from fav_games 
+      where user_id  =  '${req.session.user_id}'`
+  );
 
   // change the numeric team_id to the formal team name for both home and away teams
   games_with_events = [];
@@ -157,7 +167,7 @@ async function getPastAndFutureGames(req){
   // getting all games' by teams' names.
   let all_games = {
   past_games: past_games_promise,
-  future_games:future_games_promise
+  future_games: future_games_promise
   }
   return all_games;
 }
@@ -184,11 +194,11 @@ function convertDate(date) {
   return: (string) time of type "hh:mm:ss"
 */
 function convertTime(date){
-  var hh = date.getHours();
-  var mm = date.getMinutes();
-  var ss = date.getSeconds();
+  var hh = date.getHours().toString();
+  var mm = date.getMinutes().toString().length == 1? "0"+date.getMinutes().toString() : date.getMinutes().toString();
 
-  return hh+":"+mm+":"+ss;
+  // hh + ":" + mmChars[1]?mm:"0"+mmChars[0]) + '-' + (ddChars[1]?dd:"0"+ddChars[0]
+  return hh+":"+mm;
 }
 
 

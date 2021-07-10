@@ -75,10 +75,10 @@ async function getGameEvents(GID){
     const event = eventList[i];
     events.push({
       date: event.date,
-      time: event.time,
+      time: event.time.toString().substr(0,5),
       minute: event.minute,
       eventType: event.event_type,
-      player: (await players_utils.getPlayersInfo([event.player])).name,
+      player: (await players_utils.getPlayersInfo([event.player]))[0].name,
     })
   }
   return events;
@@ -108,7 +108,7 @@ async function addResultToGame(game_id, home_result, away_result){
 */
 async function gameHasFinishedAlready(game_id){
   const game = (await DButils.execQuery(
-    `select home_goal, away_goal, date from games
+    `select home_goal, away_goal, date, time from games
      where game_id = ${game_id};`)
   )[0];
   if(game){
@@ -116,8 +116,10 @@ async function gameHasFinishedAlready(game_id){
       return 1;
     }
     
-    if(league_utils.convertDate(game.date) != league_utils.convertDate(new Date())){
-      
+    // if game is today but later than now OR if game is tomorrow and on.
+    if((league_utils.convertDate(game.date) == league_utils.convertDate(new Date())
+     && league_utils.convertTime(game.time) > league_utils.convertTime(new Date()))
+      || league_utils.convertDate(game.date) > league_utils.convertDate(new Date())){
       return 3;
     }
     return 0;

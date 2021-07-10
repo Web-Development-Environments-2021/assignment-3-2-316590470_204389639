@@ -25,8 +25,8 @@
 -- insert into games(game_id, date, time, home_team, away_team, field, home_goal, away_goal, event)
 -- values (7, '2021-06-30', '10:00:00', 103, 83, 'Camp Nou', NULL, NULL, NULL);
 
-select * from games
-
+-- delete from fav_games where user_id = 1 and game_id = 7
+-- delete from games where game_id > 8
 -- update games
 -- SET
 --     home_goal = NULL,

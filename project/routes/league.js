@@ -28,7 +28,7 @@ router.get('/manage', async (req, res, next) => {
       throw { status: 401, message: "Unauthorized" };
     }
     // retrieves all league's games
-    const all_legaue_games = await league_utils.getPastAndFutureGames();
+    const all_legaue_games = await league_utils.getPastAndFutureGames(req);
     res.status(200).send(all_legaue_games);
   } catch(error){
     next(error);
