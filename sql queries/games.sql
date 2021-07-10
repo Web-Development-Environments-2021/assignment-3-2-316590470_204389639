@@ -33,4 +33,5 @@
 --     away_goal = NULL
 -- WHERE
 --     game_id = 5;
-
+-- delete from fav_games where (user_id = 1 and game_id = 7)
+select * from fav_games

@@ -199,7 +199,7 @@ function convertDate(date) {
 /*
 * this function transfer a time to next format: HH:MM:SS
   input: (Date) date,
-  return: (string) time of type "hh:mm:ss"
+  return: (string) time of type "hh:mm"
 */
 function convertTime(date){
   var hh = date.getHours().toString();
